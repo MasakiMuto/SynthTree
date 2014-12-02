@@ -31,13 +31,11 @@ namespace SynthTree
 			var file = new FileUtil(fn);
 			var src = new Unit.WaveSource();
 			var render = new Unit.Renderer();
-			var con = new Unit.Connection(src, render);
-			src.Out = con;
-			render.In = con;
+			Unit.UnitBase.Connect(src, 0, render, 0);
 			file.Write(Enumerable.Range(0, 44100).Select(x =>
 				{
 					src.Update();
-					return (float)render.In.Value;
+					return (float)render.In[0].Value;
 				}));
 			file.Dispose();
 			new System.Media.SoundPlayer(fn).Play();

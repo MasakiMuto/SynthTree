@@ -28,7 +28,7 @@ namespace SynthTree.Unit
 		public override void Update()
 		{
 			base.Update();
-			Out.Value = Math.Sin(CalcPhase()) * Amp;
+			Out[0].Value = Math.Sin(CalcPhase()) * Amp;
 		}
 
 		double CalcPhase()

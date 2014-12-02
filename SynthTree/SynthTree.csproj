@@ -54,8 +54,13 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="DevelopManager.cs" />
+    <Compile Include="Tree\FunctionNode.cs" />
+    <Compile Include="Tree\TreeBase.cs" />
     <Compile Include="Unit\ConstantOscillator.cs" />
+    <Compile Include="Unit\ConstantSource.cs" />
     <Compile Include="Unit\Multiplier.cs" />
+    <Compile Include="Unit\Splitter.cs" />
     <Compile Include="Unit\WaveSource.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -101,9 +106,7 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Tree\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -11,7 +11,7 @@ namespace SynthTree.Unit
 		public override void Update()
 		{
 			base.Update();
-			Out.Value = In1.Value * In2.Value;
+			Out[0].Value = In[0].Value * In[1].Value;
 		}
 	}
 }

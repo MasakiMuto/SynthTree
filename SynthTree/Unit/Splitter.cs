@@ -6,16 +6,13 @@ using System.Threading.Tasks;
 
 namespace SynthTree.Unit
 {
-	public class ConstantOscillator : Unit1In2Out
+	public class Splitter : Unit1In2Out
 	{
-		public double Constant;
-		public double Phase;
-
 		public override void Update()
 		{
 			base.Update();
-			Out[0].Value = Constant;
-			Out[1].Value = Math.Sin(In[0].Value + Phase);
+			Out[0].Value = In[0].Value;
+			Out[1].Value = In[0].Value;
 		}
 	}
 }
