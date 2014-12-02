@@ -29,15 +29,18 @@ namespace SynthTree
 		{
 			var fn = "test.wav";
 			var file = new FileUtil(fn);
-			var src = new Unit.WaveSource();
-			var render = new Unit.Renderer();
-			Unit.UnitBase.Connect(src, 0, render, 0);
-			file.Write(Enumerable.Range(0, 44100).Select(x =>
-				{
-					src.Update();
-					return (float)render.In[0].Value;
-				}));
+			var render = new DevelopManager().CreateEmbryo();
+			file.Write(Enumerable.Range(0, 44100).Select(x => (float)render.RequireValue()));
 			file.Dispose();
+			//var src = new Unit.WaveSource();
+			//var render = new Unit.Renderer();
+			//Unit.UnitBase.Connect(src, 0, render, 0);
+			//file.Write(Enumerable.Range(0, 44100).Select(x =>
+			//	{
+			//		src.Update();
+			//		return (float)render.In[0].Value;
+			//	}));
+			//file.Dispose();
 			new System.Media.SoundPlayer(fn).Play();
 		}
 	}

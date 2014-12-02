@@ -10,6 +10,11 @@ namespace SynthTree.Unit
 	{
 		public double Value;
 
+		public ConstantSource()
+		{
+			Value = 1;
+		}
+
 		public override void Update()
 		{
 			base.Update();

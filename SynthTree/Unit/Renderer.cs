@@ -12,5 +12,11 @@ namespace SynthTree.Unit
 		{
 			base.Update();
 		}
+
+		public double RequireValue()
+		{
+			Require();
+			return In[0].Value;
+		}
 	}
 }

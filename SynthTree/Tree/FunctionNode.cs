@@ -12,11 +12,18 @@ namespace SynthTree.Tree
 
 		Type type;
 
-		
+		public FunctionNode(T target, Type type)
+			: base()
+		{
+			this.target = target;
+			this.type = type;
+		}
 
 		public override void Process()
 		{
-			target = type.GetConstructor(new Type[0]).Invoke(new object[0]) as T;
+			var obj = type.GetConstructor(new Type[0]).Invoke(new object[0]) as T;
+			Unit.UnitBase.Reconnect(target, obj);
+			//target = obj;
 		}
 	}
 }

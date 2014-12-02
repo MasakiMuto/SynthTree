@@ -12,7 +12,7 @@ namespace SynthTree.Unit
 		public Connection[] In;
 		public Connection[] Out;
 
-		protected long Count { get; private set; }
+		public long Count { get; private set; }
 		public virtual void Update()
 		{
 			Count++;
@@ -28,7 +28,37 @@ namespace SynthTree.Unit
 
 			from.Out[fromIndex] = con;
 			to.In[toIndex] = con;
+		}
 
+		public static void Reconnect(UnitBase old, UnitBase next)
+		{
+			for (int i = 0; i < old.In.Length; i++)
+			{
+				next.In[i] = old.In[i];
+				next.In[i].ToUnit = next;
+			}
+			for (int i = 0; i < old.Out.Length; i++)
+			{
+				next.Out[i] = old.Out[i];
+				next.Out[i].FromUnit = next;
+			}
+		}
+
+		protected void Require()
+		{
+			if (this.In.Length == 0)
+			{
+				Update();
+				return;
+			}
+			else
+			{
+				foreach (var item in In)
+				{
+					item.FromUnit.Require();
+				}
+				Update();
+			}
 		}
 		
 
@@ -95,15 +125,27 @@ namespace SynthTree.Unit
 
 	public class Connection
 	{
-		public double Value;
+		double val;
+		public double Value
+		{
+			get { return val; }
+			set
+			{
+				Debug.Assert(Count + 1 == FromUnit.Count);
+				val = value;
+				Count = FromUnit.Count;
+			}
+		}
 		public UnitBase FromUnit;
 		public UnitBase ToUnit;
+		public long Count;
 
 		public Connection(UnitBase from, UnitBase to)
 		{
 			FromUnit = from;
 			ToUnit = to;
 		}
+
 	}
 
 }
