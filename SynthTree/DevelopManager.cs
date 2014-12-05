@@ -8,6 +8,8 @@ namespace SynthTree
 {
 	public class DevelopManager
 	{
+		int stubIndex;
+
 		public DevelopManager()
 		{
 
@@ -20,7 +22,8 @@ namespace SynthTree
 				Value = .008
 			};
 			var src1 = new Unit.WaveSource();
-			var stub = new Unit.UnitStub2In1Out();
+			var stub = new Unit.UnitStub2In1Out(stubIndex);
+			stubIndex++;
 			var render = new Unit.Renderer();
 			Unit.UnitBase.Connect(src0, 0, stub, 0);
 			Unit.UnitBase.Connect(src1, 0, stub, 1);

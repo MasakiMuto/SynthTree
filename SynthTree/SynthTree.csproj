@@ -56,6 +56,7 @@
     </ApplicationDefinition>
     <Compile Include="DevelopManager.cs" />
     <Compile Include="Tree\FunctionNode.cs" />
+    <Compile Include="Tree\Modifier.cs" />
     <Compile Include="Tree\RootNode.cs" />
     <Compile Include="Tree\TreeBase.cs" />
     <Compile Include="Unit\ConstantOscillator.cs" />

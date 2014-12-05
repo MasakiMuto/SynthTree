@@ -12,6 +12,11 @@ namespace SynthTree.Tree
 
 		Type type;
 
+		public FunctionNode(Type type)
+		{
+			this.type = type;
+		}
+
 		public FunctionNode(T target, Type type)
 			: base()
 		{

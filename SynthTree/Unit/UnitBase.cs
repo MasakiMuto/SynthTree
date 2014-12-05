@@ -109,6 +109,13 @@ namespace SynthTree.Unit
 
 	public class UnitStub2In1Out : Unit2In1Out
 	{
+		public readonly int Index;
+
+		public UnitStub2In1Out(int index)
+		{
+			Index = index;
+		}
+
 		public override void Update()
 		{
 			throw new InvalidOperationException();
@@ -117,6 +124,13 @@ namespace SynthTree.Unit
 
 	public class UnitStub1In2Out : Unit1In2Out
 	{
+		public readonly int Index;
+
+		public UnitStub1In2Out(int index)
+		{
+			Index = index;
+		}
+
 		public override void Update()
 		{
 			throw new InvalidOperationException();
