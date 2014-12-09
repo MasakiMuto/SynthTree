@@ -14,5 +14,15 @@ namespace SynthTree.Tree
 		{
 			ProcessChildren();
 		}
+
+		public RootNode Mutate()
+		{
+			throw new NotImplementedException();
+		}
+
+		public RootNode CrossOver(RootNode another)
+		{
+			throw new NotImplementedException();
+		}
 	}
 }
