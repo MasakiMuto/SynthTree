@@ -12,6 +12,10 @@ namespace SynthTree.Tree
 
 		public override void Process()
 		{
+			foreach (var item in Children)
+			{
+				item.Target = this.Target;
+			}
 			ProcessChildren();
 		}
 

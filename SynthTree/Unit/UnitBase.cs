@@ -64,12 +64,6 @@ namespace SynthTree.Unit
 
 	}
 
-	//public abstract class Unit1In1Out : UnitBase
-	//{
-	//	public Connection In;
-	//	public Connection Out;
-	//}
-
 	public abstract class UnitSource : UnitBase
 	{
 		public UnitSource()
@@ -107,33 +101,18 @@ namespace SynthTree.Unit
 		}
 	}
 
-	public class UnitStub2In1Out : Unit2In1Out
+	public class UnitWire : UnitBase
 	{
-		public readonly int Index;
-
-		public UnitStub2In1Out(int index)
+		public UnitWire()
 		{
-			Index = index;
+			In = new Connection[1];
+			Out = new Connection[1];
 		}
 
 		public override void Update()
 		{
-			throw new InvalidOperationException();
-		}
-	}
-
-	public class UnitStub1In2Out : Unit1In2Out
-	{
-		public readonly int Index;
-
-		public UnitStub1In2Out(int index)
-		{
-			Index = index;
-		}
-
-		public override void Update()
-		{
-			throw new InvalidOperationException();
+			base.Update();
+			Out[0].Value = In[0].Value;
 		}
 	}
 

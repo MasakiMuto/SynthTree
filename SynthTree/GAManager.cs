@@ -4,12 +4,19 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IECSound
+namespace SynthTree
 {
 	public class GAManager
 	{
 		ItemPool pool;
 		public bool Ready { get; private set; }
+
+		public static Random Random { get; private set; }
+
+		static GAManager()
+		{
+			Random = new Random();
+		}
 
 		public GAManager()
 		{

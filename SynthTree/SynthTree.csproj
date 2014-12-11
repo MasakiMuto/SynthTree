@@ -54,6 +54,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Tree\Generator.cs" />
     <Compile Include="DevelopManager.cs" />
     <Compile Include="GAManager.cs" />
     <Compile Include="ItemPool.cs" />
@@ -76,10 +77,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Window.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -88,10 +85,6 @@
     <Compile Include="Unit\Adder.cs" />
     <Compile Include="Unit\Renderer.cs" />
     <Compile Include="Unit\UnitBase.cs" />
-    <Compile Include="Window.xaml.cs">
-      <DependentUpon>Window.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
     <Page Include="SoundItemControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

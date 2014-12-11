@@ -10,6 +10,7 @@ namespace SynthTree.Unit
 	{
 		public override void Update()
 		{
+			base.Update();
 			Out[0].Value = In[0].Value + In[1].Value;
 		}
 	}

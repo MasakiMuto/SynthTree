@@ -1,7 +1,7 @@
-﻿<Window x:Class="IECSound.MainWindow"
+﻿<Window x:Class="SynthTree.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:my="clr-namespace:IECSound"
+        xmlns:my="clr-namespace:SynthTree"
         Title="IECSound" Height="350" Width="525">
     <Grid x:Name="grid">
         <Grid.Resources>

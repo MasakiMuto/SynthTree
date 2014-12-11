@@ -14,7 +14,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Media;
 
-namespace IECSound
+namespace SynthTree
 {
 	/// <summary>
 	/// MainWindow.xaml の相互作用ロジック
@@ -47,7 +47,15 @@ namespace IECSound
 
 		private void StartButtonClick(object sender, RoutedEventArgs e)
 		{
-			
+			var dev = new DevelopManager();
+			using(var f =new FileUtil("test1.wav"))
+			{
+				f.Write(Enumerable.Range(0, 44100).Select(x => (float)dev.render.RequireValue()));
+			}
+			using (var s = new SoundPlayer("test1.wav"))
+			{
+				s.Play();
+			}
 		}
 
 		private void SaveButtonClick(object sender, RoutedEventArgs e)

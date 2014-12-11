@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace IECSound
+namespace SynthTree
 {
 	/// <summary>
 	/// ItemControl.xaml の相互作用ロジック
