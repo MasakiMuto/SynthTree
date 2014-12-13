@@ -11,43 +11,9 @@ using LazyT = System.Lazy<System.Collections.Generic.IEnumerable<SynthTree.Tree.
 namespace SynthTree
 {
 	using Syntax = Func<int, Nodes>;
-
-	struct Option
-	{
-		public readonly int Probability;
-		public readonly LazyT Action;
-		public Option(int p, LazyT a)
-		{
-			Probability = p;
-			Action = a;
-		}
-	}
-
-	class Options : IEnumerable<Option>
-	{
-		List<Option> items;
-
-		public Options()
-		{
-			items = new List<Option>();
-		}
-
-		public void Add(int p, LazyT a)
-		{
-			items.Add(new Option(p, a));
-		}
-
-		public IEnumerator<Option> GetEnumerator()
-		{
-			return items.GetEnumerator();
-		}
-
-		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-		{
-			return items.GetEnumerator();
-		}
-	}
-
+	using Option = KeyValuePair<int, LazyT>;
+	using Options = Util.KeyValueSet<int, LazyT>;
+	
 	public static class TreeGenerator
 	{
 		public static int MaxLevel = 10;
@@ -61,14 +27,14 @@ namespace SynthTree
 		static Nodes RandomSelect(Options options)
 		{
 			var r = random.Next(0, 100);
-			System.Diagnostics.Debug.Assert(options.Sum(x=>x.Probability) == 100);
+			System.Diagnostics.Debug.Assert(options.Sum(x=>x.Key) == 100);
 			int s = 0;
 			foreach (var item in options)
 			{
-				s += item.Probability;
+				s += item.Key;
 				if (r < s)
 				{
-					return item.Action.Value;
+					return item.Value.Value;
 				}
 			}
 			throw new Exception();
