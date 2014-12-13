@@ -90,6 +90,11 @@ namespace SynthTree.Unit
 			In = new Connection[2];
 			Out = new Connection[1];
 		}
+
+		public static Unit2In1Out CreateStub()
+		{
+			return new Adder();
+		}
 	}
 
 	public abstract class Unit1In2Out : UnitBase
@@ -98,6 +103,11 @@ namespace SynthTree.Unit
 		{
 			In = new Connection[1];
 			Out = new Connection[2];
+		}
+
+		public static Unit1In2Out CreateStub()
+		{
+			return new Splitter();
 		}
 	}
 

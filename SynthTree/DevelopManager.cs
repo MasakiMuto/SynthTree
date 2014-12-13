@@ -42,7 +42,7 @@ namespace SynthTree
 
 		Tree.RootNode CreateInitialTree()
 		{
-			return Tree.Generator.Start();
+			return TreeGenerator.Start();
 		}
 	}
 }

@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SynthTree.Tree;
 
 using Nodes = System.Collections.Generic.IEnumerable<SynthTree.Tree.TreeBase>;
 using LazyT = System.Lazy<System.Collections.Generic.IEnumerable<SynthTree.Tree.TreeBase>>;
 	
-namespace SynthTree.Tree
+namespace SynthTree
 {
 	using Syntax = Func<int, Nodes>;
 
@@ -47,12 +48,12 @@ namespace SynthTree.Tree
 		}
 	}
 
-	public static class Generator
+	public static class TreeGenerator
 	{
 		public static int MaxLevel = 10;
 		static Random random;
 
-		static Generator()
+		static TreeGenerator()
 		{
 			random = new Random();
 		}

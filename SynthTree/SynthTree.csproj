@@ -54,7 +54,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Tree\Generator.cs" />
+    <Compile Include="TreeGenerator.cs" />
     <Compile Include="DevelopManager.cs" />
     <Compile Include="GAManager.cs" />
     <Compile Include="ItemPool.cs" />
