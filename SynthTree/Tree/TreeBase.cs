@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Diagnostics;
 
 namespace SynthTree.Tree
 {
@@ -48,6 +49,11 @@ namespace SynthTree.Tree
 			return this;
 		}
 
+		protected void InheritTarget()
+		{
+			Children[0].Target = this.Target;
+		}
+
 		public IEnumerable<TreeBase> ToBreadthFirstList()
 		{
 			var ret = new List<TreeBase>();
@@ -72,12 +78,19 @@ namespace SynthTree.Tree
 			first.ToBreadthFirstListInner(ret, front);
 		}
 
+		[Conditional("DEBUG")]
+		protected void AssertChildren(int childCount)
+		{
+			Debug.Assert(Children.Count == childCount);
+		}
 	}
 
 	public class NopA : TreeBase
 	{
 		public override void Process()
 		{
+			AssertChildren(1);
+			InheritTarget();
 		}
 
 		public override string ToString()
@@ -90,6 +103,7 @@ namespace SynthTree.Tree
 	{
 		public override void Process()
 		{
+			AssertChildren(0);
 			Target = null;
 		}
 

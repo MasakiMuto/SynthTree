@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,11 +13,8 @@ namespace SynthTree.Tree
 
 		public override void Process()
 		{
-			foreach (var item in Children)
-			{
-				item.Target = this.Target;
-			}
-			ProcessChildren();
+			AssertChildren(1);
+			InheritTarget();
 		}
 
 		public RootNode Mutate()

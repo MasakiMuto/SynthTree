@@ -19,7 +19,10 @@ namespace SynthTree
 			tree = CreateInitialTree();
 			Util.Visualizer.ShowTree(tree);
 			tree.Target = firstPoint;
-			tree.Process();
+			foreach (var item in tree.ToBreadthFirstList())
+			{
+				item.Process();
+			}
 			Util.Visualizer.ShowTopology(render);
 			
 		}

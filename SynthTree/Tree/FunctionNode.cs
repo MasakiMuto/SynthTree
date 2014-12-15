@@ -33,12 +33,19 @@ namespace SynthTree.Tree
 			var obj = type.GetConstructor(new Type[0]).Invoke(new object[0]) as T;
 			Unit.UnitBase.Reconnect(Target, obj);
 			Target = obj;
-			foreach (var item in Children)
+			InheritTarget();
+			if (obj is Unit.ConstantOscillator)
 			{
-				item.Target = obj;
+				AssertChildren(3);
+				var o = obj as Unit.ConstantOscillator;
+				o.Constant = (Children[1] as Constant).Value;
+				o.Phase = (Children[2] as Constant).Value;
 			}
-			ProcessChildren();
-			//target = obj;
+			else
+			{
+				AssertChildren(1);
+			}
+
 		}
 
 		public override string ToString()

@@ -12,7 +12,7 @@ namespace SynthTree.Tree
 
 		public override void Process()
 		{
-			throw new NotImplementedException();
+			AssertChildren(0);
 		}
 
 		public override string ToString()

@@ -28,6 +28,7 @@ namespace SynthTree.Tree
 		{
 			System.Diagnostics.Debug.Assert((Target is Unit2In1Out && (type == ModifierType.ParallelA1 || type == ModifierType.SeriesA1))
 				|| (Target is Unit1In2Out && (type == ModifierType.ParallelB1 || type == ModifierType.SeriesB1)));
+			InheritTarget();
 			switch (type)
 			{
 				case ModifierType.SeriesA1:
@@ -60,6 +61,9 @@ namespace SynthTree.Tree
 			Unit.UnitBase.Connect(b, 1, a, 1);
 			UnitBase.ReplaceInput(Target, 1, b, 0, b, 0);
 			UnitBase.ReplaceOutput(Target, 0, a, 0, a, 0);
+
+			Children[1].Target = a;
+			Children[2].Target = b;
 		}
 
 		void ParallelA1()
@@ -75,6 +79,11 @@ namespace SynthTree.Tree
 			UnitBase.Connect(b1, 1, a2, 0);
 			UnitBase.Connect(b2, 0, a1, 1);
 			UnitBase.Connect(b2, 1, a2, 1);
+
+			Children[1].Target = a1;
+			Children[2].Target = a2;
+			Children[3].Target = b1;
+			Children[4].Target = b2;
 		}
 
 		void SeriesB1()
@@ -84,6 +93,9 @@ namespace SynthTree.Tree
 			UnitBase.ReplaceOutput(Target, 0, b, 0, b, 0);
 			UnitBase.ReplaceOutput(Target, 1, a, 0, a, 1);
 			UnitBase.Connect(b, 1, a, 0);
+
+			Children[1].Target = b;
+			Children[2].Target = a;
 		}
 
 		void ParallelB1()
@@ -99,6 +111,11 @@ namespace SynthTree.Tree
 			UnitBase.Connect(b1, 1, a1, 1);
 			UnitBase.Connect(b0, 1, a1, 0);
 			UnitBase.Connect(b1, 0, a0, 1);
+
+			Children[1].Target = b0;
+			Children[2].Target = b1;
+			Children[3].Target = a0;
+			Children[4].Target = a1;
 		}
 	}
 
