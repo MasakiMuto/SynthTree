@@ -40,6 +40,11 @@ namespace SynthTree.Tree
 			ProcessChildren();
 			//target = obj;
 		}
+
+		public override string ToString()
+		{
+			return type.Name;
+		}
 	}
 
 }

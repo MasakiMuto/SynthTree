@@ -34,15 +34,23 @@ namespace SynthTree.Tree
 					SeriesA1();
 					break;
 				case ModifierType.ParallelA1:
+					ParallelA1();
 					break;
 				case ModifierType.SeriesB1:
+					SeriesB1();
 					break;
 				case ModifierType.ParallelB1:
+					ParallelB1();
 					break;
 				default:
-					break;
+					throw new Exception();
 			}
 
+		}
+
+		public override string ToString()
+		{
+			return type.ToString();
 		}
 
 		void SeriesA1()

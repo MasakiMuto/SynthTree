@@ -17,6 +17,7 @@ namespace SynthTree
 		{
 			render = CreateEmbryo();
 			tree = CreateInitialTree();
+			Util.TreeVisualizer.Show(tree);
 			tree.Target = firstPoint;
 			tree.Process();
 
@@ -42,7 +43,15 @@ namespace SynthTree
 
 		Tree.RootNode CreateInitialTree()
 		{
-			return TreeGenerator.Start();
+			var root = TreeGenerator.Start();
+			int i = 0;
+			var list = root.ToBreadthFirstList();
+			foreach (var item in list)
+			{
+				item.Index = i;
+				i++;
+			}
+			return root;
 		}
 	}
 }

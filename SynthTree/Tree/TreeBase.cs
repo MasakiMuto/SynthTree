@@ -15,6 +15,8 @@ namespace SynthTree.Tree
 
 		public Unit.UnitBase Target;
 
+		public int Index;
+
 
 		public TreeBase()
 		{
@@ -46,12 +48,41 @@ namespace SynthTree.Tree
 			return this;
 		}
 
+		public IEnumerable<TreeBase> ToBreadthFirstList()
+		{
+			var ret = new List<TreeBase>();
+			var front = new Queue<TreeBase>();
+			ToBreadthFirstListInner(ret, front);
+			return ret;
+		}
+
+		void ToBreadthFirstListInner(List<TreeBase> ret, Queue<TreeBase> front)
+		{
+			ret.Add(this);
+			foreach (var item in Children)
+			{
+				front.Enqueue(item);
+			}
+			if (!front.Any())
+			{
+				return;
+			}
+
+			var first = front.Dequeue();
+			first.ToBreadthFirstListInner(ret, front);
+		}
+
 	}
 
 	public class NopA : TreeBase
 	{
 		public override void Process()
 		{
+		}
+
+		public override string ToString()
+		{
+			return "Nop";
 		}
 	}
 
@@ -60,6 +91,11 @@ namespace SynthTree.Tree
 		public override void Process()
 		{
 			Target = null;
+		}
+
+		public override string ToString()
+		{
+			return "End";
 		}
 	}
 }

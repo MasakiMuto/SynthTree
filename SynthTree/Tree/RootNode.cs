@@ -28,5 +28,10 @@ namespace SynthTree.Tree
 		{
 			throw new NotImplementedException();
 		}
+
+		public override string ToString()
+		{
+			return "Root";
+		}
 	}
 }

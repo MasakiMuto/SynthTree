@@ -75,6 +75,7 @@
     <Compile Include="Unit\Splitter.cs" />
     <Compile Include="Unit\WaveSource.cs" />
     <Compile Include="Util\KeyValueSet.cs" />
+    <Compile Include="Util\TreeVisualizer.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
