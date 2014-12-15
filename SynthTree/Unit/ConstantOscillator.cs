@@ -17,5 +17,10 @@ namespace SynthTree.Unit
 			Out[0].Value = Constant;
 			Out[1].Value = Math.Sin(In[0].Value + Phase);
 		}
+
+		public override string ToString()
+		{
+			return "ConstantOscillator";
+		}
 	}
 }

@@ -14,5 +14,10 @@ namespace SynthTree.Unit
 			Out[0].Value = In[0].Value;
 			Out[1].Value = In[0].Value;
 		}
+
+		public override string ToString()
+		{
+			return "Splitter";
+		}
 	}
 }

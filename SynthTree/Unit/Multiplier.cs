@@ -13,5 +13,10 @@ namespace SynthTree.Unit
 			base.Update();
 			Out[0].Value = In[0].Value * In[1].Value;
 		}
+
+		public override string ToString()
+		{
+			return "Multiplier";
+		}
 	}
 }

@@ -17,10 +17,11 @@ namespace SynthTree
 		{
 			render = CreateEmbryo();
 			tree = CreateInitialTree();
-			Util.TreeVisualizer.Show(tree);
+			Util.Visualizer.ShowTree(tree);
 			tree.Target = firstPoint;
 			tree.Process();
-
+			Util.Visualizer.ShowTopology(render);
+			
 		}
 
 		public Unit.Renderer CreateEmbryo()

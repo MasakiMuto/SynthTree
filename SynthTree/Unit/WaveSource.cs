@@ -35,5 +35,10 @@ namespace SynthTree.Unit
 		{
 			return Count * Math.PI * 2 / FileUtil.SampleRate * Freq;
 		}
+
+		public override string ToString()
+		{
+			return "WaveSource";
+		}
 	}
 }

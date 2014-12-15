@@ -18,6 +18,10 @@ namespace SynthTree.Unit
 			Count++;
 		}
 
+		public static readonly int DefaultIndex = -1;
+		public int Index = DefaultIndex;
+		
+
 		public static void Connect(UnitBase from, int fromIndex, UnitBase to, int toIndex)
 		{
 			var con = new Connection(from, to);

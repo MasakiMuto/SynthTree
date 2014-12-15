@@ -8,13 +8,28 @@ using System.Diagnostics;
 
 namespace SynthTree.Util
 {
-	public static class TreeVisualizer
+	public static class Visualizer
 	{
-		public static void Show(Tree.RootNode root)
+		public static void ShowTree(Tree.RootNode root)
 		{
-			var scriptName = "hoge.dot";
-			var fileName = "hoge.png";
-			CreateScript(root, scriptName);
+			var scriptName = "tree.dot";
+			var fileName = "tree.png";
+			CreateTreeScript(root, scriptName);
+			RunGraphviz(scriptName, fileName);
+			Process.Start(fileName);
+		}
+
+		public static void ShowTopology(Unit.Renderer renderer)
+		{
+			var scriptName = "topo.dot";
+			var fileName = "topo.png";
+			CreateTopologyScript(renderer, scriptName);
+			RunGraphviz(scriptName, fileName);
+			Process.Start(fileName);
+		}
+
+		static void RunGraphviz(string scriptName, string fileName)
+		{
 			using (var p = new Process())
 			{
 				p.StartInfo.FileName = @"release\bin\dot.exe";
@@ -25,29 +40,54 @@ namespace SynthTree.Util
 				p.Start();
 				p.WaitForExit();
 			}
-			Process.Start(fileName);
-			
-			
 		}
 
-		static void CreateScript(Tree.RootNode root, string fileName)
+		static void CreateTreeScript(Tree.RootNode root, string fileName)
 		{
 			var str = new StringBuilder();
 			str.AppendFormat("digraph {0} {{ \n", Path.GetFileNameWithoutExtension(fileName));
 			foreach (var item in root.ToBreadthFirstList())
 			{
-				PrintItems(item, str);
+				PrintTreeNode(item, str);
 			}
 			str.AppendLine("}");
 			File.WriteAllText(fileName, str.ToString());
 			
 		}
 
-		static void PrintItems(Tree.TreeBase node, StringBuilder builder)
+		static void PrintTreeNode(Tree.TreeBase node, StringBuilder builder)
 		{
 			foreach (var item in node.Children)
 			{
 				builder.AppendFormat("\t{0}_{2} -> {1}_{3};\n", node, item, node.Index, item.Index);
+			}
+		}
+
+		static void CreateTopologyScript(Unit.Renderer renderer, string fileName)
+		{
+			var builder = new StringBuilder();
+			builder.AppendFormat("digraph {0} {{\n", Path.GetFileNameWithoutExtension(fileName));
+
+			var i = 0;
+			renderer.Index = i;
+			i++;
+			PrintTopologyUnit(renderer, builder, ref i);
+
+			builder.AppendLine("}");
+			File.WriteAllText(fileName, builder.ToString());
+		}
+
+		static void PrintTopologyUnit(Unit.UnitBase unit, StringBuilder builder, ref int i)
+		{
+			foreach (var item in unit.In.Select(x => x.FromUnit))
+			{
+				if (item.Index == Unit.UnitBase.DefaultIndex)
+				{
+					item.Index = i;
+					i++;
+					PrintTopologyUnit(item, builder, ref i);
+				}
+				builder.AppendFormat("\t{0}_{2} -> {1}_{3};\n", item, unit, item.Index, unit.Index);
 			}
 		}
 	}

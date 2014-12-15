@@ -18,5 +18,10 @@ namespace SynthTree.Unit
 			Require();
 			return In[0].Value;
 		}
+
+		public override string ToString()
+		{
+			return "Renderer";
+		}
 	}
 }

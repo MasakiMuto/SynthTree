@@ -20,5 +20,10 @@ namespace SynthTree.Unit
 			base.Update();
 			Out[0].Value = Value;
 		}
+
+		public override string ToString()
+		{
+			return "ConstantSource";
+		}
 	}
 }
