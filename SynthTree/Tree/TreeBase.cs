@@ -37,7 +37,7 @@ namespace SynthTree.Tree
 			return this;
 		}
 
-		public TreeBase AddChildren(IEnumerable<TreeBase> items)
+		public TreeBase AddChildren(params TreeBase[] items)
 		{
 			foreach (var item in items)
 			{
@@ -46,26 +46,6 @@ namespace SynthTree.Tree
 			return this;
 		}
 
-		public TreeBase[] ToSingleArray()
-		{
-			return new[] { this };
-		}
-
-		protected static TreeBase RandomSelect(Tuple<Type, int>[] options)
-		{
-			System.Diagnostics.Debug.Assert(options.Sum(x=>x.Item2) == 100);
-			var rand = GAManager.Random.Next(0, 100);
-			var s = 0;
-			foreach (var item in options)
-			{
-				s += item.Item2;
-				if (rand < s)
-				{
-					return item.Item1.GetConstructor(System.Type.EmptyTypes).Invoke(null) as TreeBase;
-				}
-			}
-			throw new Exception();
-		}
 	}
 
 	public class NopA : TreeBase

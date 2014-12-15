@@ -64,6 +64,7 @@
     <Compile Include="SoundItemControl.xaml.cs">
       <DependentUpon>SoundItemControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Tree\Constant.cs" />
     <Compile Include="Tree\FunctionNode.cs" />
     <Compile Include="Tree\Modifier.cs" />
     <Compile Include="Tree\RootNode.cs" />

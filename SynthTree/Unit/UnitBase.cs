@@ -30,6 +30,11 @@ namespace SynthTree.Unit
 			to.In[toIndex] = con;
 		}
 
+		/// <summary>
+		/// あるユニットを別のものに置き換える
+		/// </summary>
+		/// <param name="old"></param>
+		/// <param name="next"></param>
 		public static void Reconnect(UnitBase old, UnitBase next)
 		{
 			for (int i = 0; i < old.In.Length; i++)
@@ -42,6 +47,29 @@ namespace SynthTree.Unit
 				next.Out[i] = old.Out[i];
 				next.Out[i].FromUnit = next;
 			}
+		}
+
+		/// <summary>
+		/// oldのInputの指定ノードをnextのInputの指定ノードに繋ぎ変え、oldのInputの指定ノードを新たにnewInputのOutputの指定ノードにつなぐ
+		/// </summary>
+		/// <param name="old"></param>
+		/// <param name="oldIndex"></param>
+		/// <param name="next"></param>
+		/// <param name="nextIndex"></param>
+		/// <param name="newInput"></param>
+		/// <param name="newInputIndex"></param>
+		public static void ReplaceInput(UnitBase old, int oldIndex, UnitBase next, int nextIndex, UnitBase newInput, int newInputIndex)
+		{
+			next.In[nextIndex] = old.In[oldIndex];
+			next.In[nextIndex].ToUnit = next;
+			Connect(newInput, newInputIndex, old, oldIndex);
+		}
+
+		public static void ReplaceOutput(UnitBase old, int oldIndex, UnitBase next, int nextIndex, UnitBase newOutput, int newOutputIndex)
+		{
+			next.Out[nextIndex] = old.Out[oldIndex];
+			next.Out[nextIndex].FromUnit = next;
+			Connect(old, oldIndex, newOutput, newOutputIndex);
 		}
 
 		protected void Require()

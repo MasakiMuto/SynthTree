@@ -47,13 +47,50 @@ namespace SynthTree.Tree
 
 		void SeriesA1()
 		{
-			var s1 = Unit2In1Out.CreateStub();
-			var s2 = Unit1In2Out.CreateStub();
-			Unit.UnitBase.Connect(Target.In[1].FromUnit, 0, s2, 0);
-			Unit.UnitBase.Connect(s1, 0, Target.Out[0].ToUnit, 0);
-			Unit.UnitBase.Connect(s2, 0, Target, 1);
-			Unit.UnitBase.Connect(s2, 1, s1, 1);
-			Unit.UnitBase.Connect(Target, 0, s1, 0);
+			var a = Unit2In1Out.CreateStub();
+			var b = Unit1In2Out.CreateStub();
+			Unit.UnitBase.Connect(b, 1, a, 1);
+			UnitBase.ReplaceInput(Target, 1, b, 0, b, 0);
+			UnitBase.ReplaceOutput(Target, 0, a, 0, a, 0);
+		}
+
+		void ParallelA1()
+		{
+			var a1 = Unit2In1Out.CreateStub();
+			var a2 = Unit2In1Out.CreateStub();
+			var b1 = Unit1In2Out.CreateStub();
+			var b2 = Unit1In2Out.CreateStub();
+
+			UnitBase.ReplaceInput(Target, 0, b1, 0, a1, 0);
+			UnitBase.ReplaceInput(Target, 1, b2, 0, a2, 0);
+			UnitBase.Connect(b1, 0, a1, 0);
+			UnitBase.Connect(b1, 1, a2, 0);
+			UnitBase.Connect(b2, 0, a1, 1);
+			UnitBase.Connect(b2, 1, a2, 1);
+		}
+
+		void SeriesB1()
+		{
+			var a = Unit2In1Out.CreateStub();
+			var b = Unit1In2Out.CreateStub();
+			UnitBase.ReplaceOutput(Target, 0, b, 0, b, 0);
+			UnitBase.ReplaceOutput(Target, 1, a, 0, a, 1);
+			UnitBase.Connect(b, 1, a, 0);
+		}
+
+		void ParallelB1()
+		{
+			var a0 = Unit2In1Out.CreateStub();
+			var a1 = Unit2In1Out.CreateStub();
+			var b0 = Unit1In2Out.CreateStub();
+			var b1 = Unit1In2Out.CreateStub();
+
+			UnitBase.ReplaceOutput(Target, 0, a0, 0, b0, 0);
+			UnitBase.ReplaceOutput(Target, 1, a1, 0, b1, 0);
+			UnitBase.Connect(b0, 0, a0, 0);
+			UnitBase.Connect(b1, 1, a1, 1);
+			UnitBase.Connect(b0, 1, a1, 0);
+			UnitBase.Connect(b1, 0, a0, 1);
 		}
 	}
 
