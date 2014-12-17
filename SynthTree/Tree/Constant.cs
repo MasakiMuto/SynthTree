@@ -10,6 +10,11 @@ namespace SynthTree.Tree
 	{
 		public double Value;
 
+		public Constant(double value)
+		{
+			Value = value;
+		}
+
 		public override void Process()
 		{
 			AssertChildren(0);

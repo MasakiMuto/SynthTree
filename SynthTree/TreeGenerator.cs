@@ -174,7 +174,7 @@ namespace SynthTree
 
 		public static TreeBase NumVal(int l)
 		{
-			return new Constant();
+			return new Constant(random.NextDouble());
 		}
 
 

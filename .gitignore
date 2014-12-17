@@ -1,3 +1,5 @@
 SynthTree/bin/
 SynthTree/obj/
 *.suo
+AudioLib/obj/
+packages/
