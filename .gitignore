@@ -3,3 +3,4 @@ SynthTree/obj/
 *.suo
 AudioLib/obj/
 packages/
+AudioLib/bin/

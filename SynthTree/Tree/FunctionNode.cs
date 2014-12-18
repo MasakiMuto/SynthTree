@@ -12,20 +12,15 @@ namespace SynthTree.Tree
 		Type type;
 
 		public FunctionNode(Type type)
+			: base()
 		{
 			this.type = type;
 		}
 
 		public FunctionNode()
-		{
-			this.type = typeof(T);
-		}
-
-		public FunctionNode(T target, Type type)
 			: base()
 		{
-			Target = target;
-			this.type = type;
+			this.type = typeof(T);
 		}
 
 		public override void Process()
@@ -51,6 +46,33 @@ namespace SynthTree.Tree
 		public override string ToString()
 		{
 			return type.Name;
+		}
+
+		protected override TreeBase[] CreateChildren()
+		{
+			//if (Level > MaxLevel)
+			//{
+			//	return new[] { TreeGenerator.GetNode(NodeType.End) };
+			//}
+			if (type == typeof(Unit.ConstantOscillator))
+			{
+				return new[] { Level > MaxLevel ? NodeType.End : NodeType.FlagB, NodeType.Constant, NodeType.Constant }
+					.Select(x => TreeGenerator.GetNode(x, Level))
+					.ToArray();
+			}
+			else if (Level > MaxLevel)
+			{
+				return new[] { TreeGenerator.GetNode(NodeType.End, Level) };
+			}
+			else if (type == typeof(Unit.Adder) || type == typeof(Unit.Multiplier))
+			{
+				return new[] { TreeGenerator.GetNode(NodeType.FlagA, Level) };
+			}
+			else if(type == typeof(Unit.Splitter))
+			{
+				return new[] { TreeGenerator.GetNode(NodeType.FlagB, Level) };
+			}
+			throw new Exception();
 		}
 	}
 

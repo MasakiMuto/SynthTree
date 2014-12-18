@@ -18,6 +18,9 @@ namespace SynthTree.Tree
 
 		public int Index;
 
+		protected int Level { get; private set; }
+
+		protected static readonly int MaxLevel = 5;
 
 		public TreeBase()
 		{
@@ -37,6 +40,7 @@ namespace SynthTree.Tree
 		{
 			item.Parent = this;
 			Children.Add(item);
+			item.Level = this.Level + 1;
 			return this;
 		}
 
@@ -83,10 +87,39 @@ namespace SynthTree.Tree
 		{
 			Debug.Assert(Children.Count == childCount);
 		}
+
+		public void DevelopChildren()
+		{
+			var children = CreateChildren();
+			AddChildren(children);
+			foreach (var item in children)
+			{
+				item.DevelopChildren();
+			}
+		}
+
+		protected abstract TreeBase[] CreateChildren();
+
+
 	}
 
-	public class NopA : TreeBase
+	public class Nop : TreeBase
 	{
+		public enum ConnectionType
+		{
+			A,
+			B,
+			W
+		}
+
+		ConnectionType type;
+
+		public Nop(ConnectionType type)
+			: base()
+		{
+			this.type = type;
+		}
+
 		public override void Process()
 		{
 			AssertChildren(1);
@@ -97,6 +130,27 @@ namespace SynthTree.Tree
 		{
 			return "Nop";
 		}
+
+		protected override TreeBase[] CreateChildren()
+		{
+			NodeType nt;
+			switch (type)
+			{
+				case ConnectionType.A:
+					nt = NodeType.FlagA;
+					break;
+				case ConnectionType.B:
+					nt = NodeType.FlagB;
+					break;
+				case ConnectionType.W:
+					nt = NodeType.FlagW;
+					break;
+				default:
+					throw new Exception();
+			}
+			return new[] { TreeGenerator.GetNode(nt, Level) };
+		}
+
 	}
 
 	public class EndA : TreeBase
@@ -110,6 +164,11 @@ namespace SynthTree.Tree
 		public override string ToString()
 		{
 			return "End";
+		}
+
+		protected override TreeBase[] CreateChildren()
+		{
+			return new TreeBase[0];
 		}
 	}
 }

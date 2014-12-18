@@ -31,5 +31,12 @@ namespace SynthTree.Tree
 		{
 			return "Root";
 		}
+
+		protected override TreeBase[] CreateChildren()
+		{
+			return new[] { TreeGenerator.GetNode(NodeType.FlagA | NodeType.FlagType, Level) };
+		}
+
+
 	}
 }

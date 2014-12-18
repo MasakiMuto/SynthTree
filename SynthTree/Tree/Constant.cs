@@ -11,6 +11,7 @@ namespace SynthTree.Tree
 		public double Value;
 
 		public Constant(double value)
+			: base()
 		{
 			Value = value;
 		}
@@ -22,7 +23,12 @@ namespace SynthTree.Tree
 
 		public override string ToString()
 		{
-			return "const" + Value.ToString();
+			return "const" + Value.ToString().Replace(".", "_"); ;
+		}
+
+		protected override TreeBase[] CreateChildren()
+		{
+			return new TreeBase[0];
 		}
 	}
 }

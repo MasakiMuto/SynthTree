@@ -20,6 +20,7 @@ namespace SynthTree.Tree
 		readonly ModifierType type;
 
 		public Modifier(ModifierType type)
+			: base()
 		{
 			this.type = type;
 		}
@@ -116,6 +117,41 @@ namespace SynthTree.Tree
 			Children[2].Target = b1;
 			Children[3].Target = a0;
 			Children[4].Target = a1;
+		}
+
+		protected override TreeBase[] CreateChildren()
+		{
+			NodeType[] nt;
+			var ta = NodeType.FlagA | NodeType.FlagType;
+			var tb = NodeType.FlagB | NodeType.FlagType;
+			var fa = Level > MaxLevel ? NodeType.End : NodeType.FlagA;
+			var fb = Level > MaxLevel ? NodeType.End : NodeType.FlagB;
+			switch (this.type)
+			{
+				case ModifierType.SeriesA1:
+					nt = new[] { fa, ta, tb, NodeType.FlagW, NodeType.FlagW, NodeType.FlagW };
+					break;
+				case ModifierType.ParallelA1:
+					nt = new[]{ fa, ta, ta,
+						tb, tb,
+						NodeType.FlagW, NodeType.FlagW, NodeType.FlagW, NodeType.FlagW, NodeType.FlagW, NodeType.FlagW};
+					break;
+				case ModifierType.SeriesB1:
+					nt = new []{NodeType.FlagB, tb, ta,
+						NodeType.FlagW, NodeType.FlagW };
+					break;
+				case ModifierType.ParallelB1:
+					nt = new []{NodeType.FlagB, tb, tb, ta, ta,
+						NodeType.FlagW, NodeType.FlagW, NodeType.FlagW, NodeType.FlagW, NodeType.FlagW, NodeType.FlagW};
+					break;
+				default:
+					throw new Exception();
+			}
+			//if (Level > MaxLevel)
+			//{
+			//	nt = new[] { NodeType.End };
+			//}
+			return nt.Select(x=>TreeGenerator.GetNode(x, Level)).ToArray();
 		}
 	}
 
