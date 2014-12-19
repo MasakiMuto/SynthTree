@@ -23,6 +23,23 @@ namespace SynthTree.Tree
 			: base()
 		{
 			this.type = type;
+			switch (type)
+			{
+				case ModifierType.SeriesA1:
+					NodeType = SynthTree.NodeType.SeriesA;
+					break;
+				case ModifierType.ParallelA1:
+					NodeType = SynthTree.NodeType.ParallelA;
+					break;
+				case ModifierType.SeriesB1:
+					NodeType = SynthTree.NodeType.SeriesB;
+					break;
+				case ModifierType.ParallelB1:
+					NodeType = SynthTree.NodeType.ParallelB;
+					break;
+				default:
+					break;
+			}
 		}
 
 		public override void Process()
@@ -152,6 +169,11 @@ namespace SynthTree.Tree
 			//	nt = new[] { NodeType.End };
 			//}
 			return nt.Select(x=>TreeGenerator.GetNode(x, Level)).ToArray();
+		}
+
+		protected override TreeBase CloneSelf()
+		{
+			return new Modifier(type);
 		}
 	}
 

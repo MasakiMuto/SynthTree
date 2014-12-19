@@ -24,6 +24,12 @@ namespace SynthTree
 			pool = new ItemPool();
 		}
 
+		public void Start(Tree.RootNode tree)
+		{
+			Ready = true;
+			pool.Init(tree);
+		}
+
 		//public void Start(SynthParam adam)
 		//{
 		//	Ready = true;
@@ -32,27 +38,28 @@ namespace SynthTree
 		//	pool.Init(adam, 0);
 		//}
 
-		//public void Play(int index)
-		//{
-		//	if (!Ready) return;
-		//	var param = pool[index];
-		//	using (var synth = new SynthEngine())
-		//	{
-		//		synth.SynthFile(param).Play();
-		//	}
-		//}
+		public void Play(int index)
+		{
+			if (!Ready) return;
+			var param = pool[index];
+			using (var s = new System.Media.SoundPlayer(param.Sound))
+			{
+				s.Play();
+			}
+		}
 
-		//public Task PlaySync(int index)
-		//{
-		//	return Task.Run(()=>{
-		//		if (!Ready) return;
-		//		using (var synth = new SynthEngine())
-		//		{
-		//			synth.SynthFile(pool[index]).PlaySync();
-		//		}
-		//	}
-		//	);
-		//}
+		public void Visualize(int index)
+		{
+			if (!Ready) return;
+			var param = pool[index];
+			Util.Visualizer.ShowTopology(param.Topology);
+			Util.Visualizer.ShowTree(param.Tree);
+		}
+
+		public Task PlaySync(int index)
+		{
+			return Task.Run(()=>Play(index));
+		}
 
 		//public void Update(IEnumerable<int> saved)
 		//{

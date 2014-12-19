@@ -36,10 +36,15 @@ namespace SynthTree
 			await Play();
 		}
 
+		void VisualClick(object sneder, RoutedEventArgs e)
+		{
+			window.Manager.Visualize(Index);
+		}
+
 		public async Task Play()
 		{
 			Activate();
-			//await window.Manager.PlaySync(Index);
+			await window.Manager.PlaySync(Index);
 			Deactivate();
 		}
 

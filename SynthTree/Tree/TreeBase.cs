@@ -9,8 +9,8 @@ namespace SynthTree.Tree
 {
 	public abstract class TreeBase
 	{
-		public TreeBase Parent;
-		public List<TreeBase> Children;
+		public TreeBase Parent { get; private set; }
+		public List<TreeBase> Children { get; private set; }
 
 		public abstract void Process();
 
@@ -21,6 +21,8 @@ namespace SynthTree.Tree
 		protected int Level { get; private set; }
 
 		protected static readonly int MaxLevel = 5;
+
+		public NodeType NodeType { get; protected set; }
 
 		public TreeBase()
 		{
@@ -100,6 +102,25 @@ namespace SynthTree.Tree
 
 		protected abstract TreeBase[] CreateChildren();
 
+		protected abstract TreeBase CloneSelf();
+
+		protected TreeBase Clone()
+		{
+			var c = CloneSelf();
+			foreach (var item in Children)
+			{
+				c.AddChild(item.Clone());
+			}
+			return c;
+		}
+
+		public void ChangeChild(TreeBase target, TreeBase next)
+		{
+			var i = Children.IndexOf(target);
+			Children[i] = next;
+			next.Parent = this;
+			next.Level = this.Level + 1;
+		}
 
 	}
 
@@ -118,6 +139,20 @@ namespace SynthTree.Tree
 			: base()
 		{
 			this.type = type;
+			switch (type)
+			{
+				case ConnectionType.A:
+					NodeType = SynthTree.NodeType.NopA;
+					break;
+				case ConnectionType.B:
+					NodeType = SynthTree.NodeType.NopB;
+					break;
+				case ConnectionType.W:
+					NodeType = SynthTree.NodeType.NopW;
+					break;
+				default:
+					break;
+			}
 		}
 
 		public override void Process()
@@ -151,10 +186,21 @@ namespace SynthTree.Tree
 			return new[] { TreeGenerator.GetNode(nt, Level) };
 		}
 
+		protected override TreeBase CloneSelf()
+		{
+			var c = new Nop(type);
+			return c;
+		}
+
 	}
 
 	public class EndA : TreeBase
 	{
+		public EndA()
+		{
+			NodeType = SynthTree.NodeType.End;
+		}
+
 		public override void Process()
 		{
 			AssertChildren(0);
@@ -169,6 +215,11 @@ namespace SynthTree.Tree
 		protected override TreeBase[] CreateChildren()
 		{
 			return new TreeBase[0];
+		}
+
+		protected override TreeBase CloneSelf()
+		{
+			return new EndA();
 		}
 	}
 }

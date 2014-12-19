@@ -8,19 +8,21 @@ namespace SynthTree.Tree
 {
 	public class FunctionNode<T> : TreeBase where T : Unit.UnitBase
 	{
-		
-		Type type;
-
-		public FunctionNode(Type type)
-			: base()
+		static readonly Dictionary<Type, NodeType> typeTable = new Dictionary<Type, NodeType>
 		{
-			this.type = type;
-		}
+			{typeof(Unit.Adder), NodeType.Add},
+			{typeof(Unit.Multiplier), NodeType.Mult},
+			{typeof(Unit.Splitter), NodeType.Split},
+			{typeof(Unit.ConstantOscillator), NodeType.Oscil}
+		};
+
+		Type type;
 
 		public FunctionNode()
 			: base()
 		{
 			this.type = typeof(T);
+			NodeType = typeTable[type];
 		}
 
 		public override void Process()
@@ -73,6 +75,11 @@ namespace SynthTree.Tree
 				return new[] { TreeGenerator.GetNode(NodeType.FlagB, Level) };
 			}
 			throw new Exception();
+		}
+
+		protected override TreeBase CloneSelf()
+		{
+			return new FunctionNode<T>();
 		}
 	}
 

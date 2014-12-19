@@ -24,6 +24,8 @@ namespace SynthTree
 		public GAManager Manager { get; private set; }
 		SoundItemControl[] soundControls;
 
+		Tree.RootNode tree;
+
 		public MainWindow()
 		{
 			InitializeComponent();
@@ -43,19 +45,26 @@ namespace SynthTree
 			}
 		}
 
+		void GenerateClick(object sender, RoutedEventArgs e)
+		{
+			tree = DevelopManager.CreateInitialTree();
+			Util.Visualizer.ShowTree(tree);
+		}
 		
 
 		private void StartButtonClick(object sender, RoutedEventArgs e)
 		{
-			var dev = new DevelopManager();
-			using(var f =new FileUtil("test1.wav"))
-			{
-				f.Write(Enumerable.Range(0, 44100).Select(x => (float)dev.render.RequireValue()));
-			}
-			using (var s = new SoundPlayer("test1.wav"))
-			{
-				s.Play();
-			}
+			Manager.Start(tree);
+
+			//var dev = new DevelopManager();
+			//using(var f =new FileUtil("test1.wav"))
+			//{
+			//	f.Write(Enumerable.Range(0, 44100).Select(x => (float)dev.render.RequireValue()));
+			//}
+			//using (var s = new SoundPlayer("test1.wav"))
+			//{
+			//	s.Play();
+			//}
 		}
 
 		private void SaveButtonClick(object sender, RoutedEventArgs e)
@@ -63,7 +72,7 @@ namespace SynthTree
 			var target = soundControls.FirstOrDefault(x => x.IsChecked);
 			if (target != null)
 			{
-
+				
 			}
 		}
 

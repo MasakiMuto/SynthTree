@@ -26,5 +26,6 @@
         <Button Content="Save" Grid.Column="2" Grid.Row="3" Click="SaveButtonClick" />
         <Button Content="PlayAll" Grid.Column="1" Grid.Row="3" Click="PlayAllClick" />
         <Button Content="Start" Grid.Column="3" Grid.Row="3" Click="StartButtonClick" />
+        <Button Content="Generate" Grid.Column="3" Grid.Row="2" Click="GenerateClick" />
     </Grid>
 </Window>

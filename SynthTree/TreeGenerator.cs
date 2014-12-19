@@ -18,6 +18,8 @@ namespace SynthTree
 	[Flags]
 	public enum NodeType//(Abstract)_(Type)(AorBorW)_(SpecifiedValue^4)
 	{
+		Mask           = 0x1f0,  //1_1111_0000
+
 		FlagAbstract   = 0x100,  //1_0000_0000 
 		FlagType       = 0x180,  //1_1000_0000
 		FlagGeneral    = 0x170,  //1_0111_0000
@@ -38,6 +40,7 @@ namespace SynthTree
 		SeriesB		   = 0x020,  //0_0010_0000
 		ParallelB	   = 0x021,  //0_0010_0001
 		Constant       = 0x000,  //0_0000_0000
+		Root           = 0x001,  //0_0000_0001
 	}
 
 	public static class TreeGenerator
@@ -57,18 +60,23 @@ namespace SynthTree
 
 		public static TreeBase GetNode(NodeType type, int level)
 		{
+			var cand = GetCandidate(type, level);
+			var r = random.Next(cand.Length);
+			return CreateNode(cand[r]);
+		}
+
+		public static NodeType[] GetCandidate(NodeType type, int level)
+		{
 			if (!type.HasFlag(NodeType.FlagAbstract))
 			{
-				return CreateNode(type);
+				return new[]{ type };
 			}
 			type -= NodeType.FlagAbstract;
 			if (level > MaxLevel && !type.HasFlag(NodeType.FlagType))
 			{
-				return CreateNode(NodeType.End);
+				return new[] { NodeType.End };
 			}
-			var cand = candidateTypes.Where(x => (x & type) == type).ToArray();
-			var r = random.Next(cand.Length);
-			return CreateNode(cand[r]);
+			return candidateTypes.Where(x => (x & type) == type).ToArray();
 		}
 
 		static TreeBase CreateNode(NodeType type)

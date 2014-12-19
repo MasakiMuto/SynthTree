@@ -16,14 +16,14 @@ namespace SynthTree
 		public DevelopManager()
 		{
 			render = CreateEmbryo();
-			tree = CreateInitialTree();
-			Util.Visualizer.ShowTree(tree);
-			tree.Target = firstPoint;
-			foreach (var item in tree.ToBreadthFirstList())
-			{
-				item.Process();
-			}
-			Util.Visualizer.ShowTopology(render);
+			//tree = CreateInitialTree();
+			//Util.Visualizer.ShowTree(tree);
+			//tree.Target = firstPoint;
+			//foreach (var item in tree.ToBreadthFirstList())
+			//{
+			//	item.Process();
+			//}
+			//Util.Visualizer.ShowTopology(render);
 			
 		}
 
@@ -45,7 +45,7 @@ namespace SynthTree
 		}
 
 
-		Tree.RootNode CreateInitialTree()
+		public static Tree.RootNode CreateInitialTree()
 		{
 			//var root = TreeGenerator.Start();
 			var root = new Tree.RootNode();
@@ -58,6 +58,18 @@ namespace SynthTree
 				i++;
 			}
 			return root;
+		}
+
+		public static Unit.Renderer DevelopTopology(Tree.RootNode tree)
+		{
+			var man = new DevelopManager();
+			man.tree = tree;
+			tree.Target = man.firstPoint;
+			foreach (var item in tree.ToBreadthFirstList())
+			{
+				item.Process();
+			}
+			return man.render;
 		}
 	}
 }

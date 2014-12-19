@@ -14,6 +14,7 @@ namespace SynthTree.Tree
 			: base()
 		{
 			Value = value;
+			NodeType = SynthTree.NodeType.Constant;
 		}
 
 		public override void Process()
@@ -29,6 +30,11 @@ namespace SynthTree.Tree
 		protected override TreeBase[] CreateChildren()
 		{
 			return new TreeBase[0];
+		}
+
+		protected override TreeBase CloneSelf()
+		{
+			return new Constant(Value);
 		}
 	}
 }

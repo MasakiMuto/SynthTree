@@ -67,27 +67,26 @@ namespace SynthTree.Util
 		{
 			var builder = new StringBuilder();
 			builder.AppendFormat("digraph {0} {{\n", Path.GetFileNameWithoutExtension(fileName));
+			var dict = new Dictionary<Unit.UnitBase, int>();
+			
 
-			var i = 0;
-			renderer.Index = i;
-			i++;
-			PrintTopologyUnit(renderer, builder, ref i);
+			dict[renderer] = 0;
+			PrintTopologyUnit(renderer, builder, dict);
 
 			builder.AppendLine("}");
 			File.WriteAllText(fileName, builder.ToString());
 		}
 
-		static void PrintTopologyUnit(Unit.UnitBase unit, StringBuilder builder, ref int i)
+		static void PrintTopologyUnit(Unit.UnitBase unit, StringBuilder builder, Dictionary<Unit.UnitBase, int> dict)
 		{
 			foreach (var item in unit.In.Select(x => x.FromUnit))
 			{
-				if (item.Index == Unit.UnitBase.DefaultIndex)
+				if (!dict.ContainsKey(item))
 				{
-					item.Index = i;
-					i++;
-					PrintTopologyUnit(item, builder, ref i);
+					dict[item] = dict.Count;
+					PrintTopologyUnit(item, builder, dict);
 				}
-				builder.AppendFormat("\t{0}_{2} -> {1}_{3};\n", item, unit, item.Index, unit.Index);
+				builder.AppendFormat("\t{0}_{2} -> {1}_{3};\n", item, unit, dict[item], dict[unit]);
 			}
 		}
 	}

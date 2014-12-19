@@ -6,18 +6,39 @@ using System.Threading.Tasks;
 
 namespace SynthTree
 {
-	class ItemPool
+	public class ItemPool
 	{
+		public class ItemSet
+		{
+			public readonly Tree.RootNode Tree;
+			public readonly Unit.Renderer Topology;
+			public readonly string Sound;
+
+			public ItemSet(Tree.RootNode tree)
+			{
+				Tree = tree;
+				Topology = DevelopManager.DevelopTopology(tree);
+				Sound = System.IO.Path.GetTempFileName();
+				using (var f = new FileUtil(Sound))
+				{
+					f.Write(Enumerable.Range(0, 44100).Select(x => (float)Topology.RequireValue()));
+				}
+			}
+
+		}
+
 		public static ItemPool Instance { get; private set; }
-		SynthTree.Tree.RootNode[] items;
+		ItemSet[] items;
 		Random rand;
 		public int Generation { get; private set; }
+
+		public ItemSet this[int i]{get{return items[i];}}
 
 		public ItemPool()
 		{
 			Instance = this;
 			rand = new Random();
-			items = new Tree.RootNode[10];
+			items = new ItemSet[10];
 		}
 
 		/// <summary>
@@ -26,23 +47,30 @@ namespace SynthTree
 		/// <param name="p"></param>
 		public void Init(Tree.RootNode p)
 		{
-			for (int i = 0; i < items.Length; i++)
+			items[0] = new ItemSet(p);
+			for (int i = 1; i < items.Length; i++)
 			{
-				items[i] = p.Mutate();
-				//items[i] = SynthParam.Mutate(p);
+				var t = p.CloneTree();
+				t.Mutate(rand);
+				items[i] = new ItemSet(t);
 			}
 		}
 
 		public void CrossOver(int[] index)
 		{
-			var parent = items.Where((x, i) => index.Contains(i)).ToArray();
+			var parent = items.Where((x, i) => index.Contains(i)).Select(x=>x.Tree).ToArray();
 			for (int i = 0; i < items.Length; i++)
 			{
 				if (!index.Contains(i))
 				{
 					var p = GetPair(index.Length);
-					items[i] = parent[p.Item1].CrossOver(parent[p.Item2]);
-					//items[i] = parent[p.Item1].CrossOver(rand, parent[p.Item2]);
+					var t = parent[p.Item1];
+					if (!t.CrossOver(parent[p.Item2], rand))
+					{
+						System.Diagnostics.Debugger.Break();
+					}
+
+					items[i] = new ItemSet(t);
 				}
 			}
 			Generation++;
