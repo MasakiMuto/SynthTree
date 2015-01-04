@@ -26,6 +26,8 @@ namespace SynthTree
 
 		Tree.RootNode tree;
 
+		AudioLib.Recorder recorder;
+
 		public MainWindow()
 		{
 			InitializeComponent();
@@ -43,6 +45,7 @@ namespace SynthTree
 			{
 				grid.Children.Add(item);
 			}
+			recorder = new AudioLib.Recorder();
 		}
 
 		void GenerateClick(object sender, RoutedEventArgs e)
@@ -89,6 +92,20 @@ namespace SynthTree
 		{
 			//Manager.Update(soundControls.Where(x => x.IsChecked).Select(x=>x.Index));
 		}
+
+		void RecordButtonClick(object sender, RoutedEventArgs e)
+		{
+			if (recorder.IsRecording)
+			{
+				recorder.EndRecord("record.wav");
+			}
+			else
+			{
+				new RecordWindow(recorder).Show();
+				recorder.BeginRecord();
+			}
+		}
+
 
 	}
 }

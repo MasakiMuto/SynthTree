@@ -1,0 +1,10 @@
+﻿<Window x:Class="SynthTree.RecordWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:oxy="http://oxyplot.org/wpf"
+        Title="RecordWindow" Height="300" Width="300" Closed="Window_Closed">
+    <Grid>
+        <oxy:PlotView x:Name="plot">
+        </oxy:PlotView>
+    </Grid>
+</Window>
