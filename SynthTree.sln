@@ -4,6 +4,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SynthTree", "SynthTree\SynthTree.csproj", "{CC8B6614-B5A2-4062-A43F-7EC776ACAFC4}"
+	ProjectSection(ProjectDependencies) = postProject
+		{BF15B656-A4B5-4AA7-99AB-39E47ACE6708} = {BF15B656-A4B5-4AA7-99AB-39E47ACE6708}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AudioLib", "AudioLib\AudioLib.csproj", "{BF15B656-A4B5-4AA7-99AB-39E47ACE6708}"
 EndProject

@@ -65,6 +65,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="AnalyzeWindow.xaml.cs">
+      <DependentUpon>AnalyzeWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="RecordWindow.xaml.cs">
       <DependentUpon>RecordWindow.xaml</DependentUpon>
     </Compile>
@@ -90,6 +93,10 @@
     <Compile Include="Unit\WaveSource.cs" />
     <Compile Include="Util\KeyValueSet.cs" />
     <Compile Include="Util\TreeVisualizer.cs" />
+    <Page Include="AnalyzeWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

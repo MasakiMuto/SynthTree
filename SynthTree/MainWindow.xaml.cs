@@ -46,6 +46,7 @@ namespace SynthTree
 				grid.Children.Add(item);
 			}
 			recorder = new AudioLib.Recorder();
+			new AnalyzeWindow().Show();
 		}
 
 		void GenerateClick(object sender, RoutedEventArgs e)
