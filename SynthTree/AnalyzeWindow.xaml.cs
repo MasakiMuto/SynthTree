@@ -37,23 +37,25 @@ namespace SynthTree
 			}
 		}
 
-		OxyPlot.Series.LineSeries series;
+		public AudioLib.Analyzer Analyzer { get; private set; }
 
 		async void OpenFile(string fn)
 		{
 			this.Cursor = Cursors.Wait;
-			var analyzer = new AudioLib.Analyzer(fn);
+			Analyzer = new AudioLib.Analyzer(fn);
 			//analyzer.Dft();
 			//analyzer.CalcSpectrogram();
-			await Task.Run(() => analyzer.CalcPower());
-			await Task.Run(() => analyzer.CalcPitch());
+			await Task.Run(() => Analyzer.CalcPower());
+			await Task.Run(() => Analyzer.CalcPitch());
 			this.Cursor = null;
 			//SetSpector(analyzer.Freq.Select((x, i) => new OxyPlot.DataPoint(analyzer.FreqPerIndex * i, x)));
 
-			plot.Model = SetSpectrogram(analyzer.FreqTime.Select((x, i) => new OxyPlot.DataPoint(i * analyzer.SecondPerIndex, x)));
-			plot2.Model = SetPowergram(analyzer.PowerTime.Select((x, i) => new OxyPlot.DataPoint(i * analyzer.SecondPerIndex, x)));
+			plot.Model = SetSpectrogram(Analyzer.FreqTime.Select((x, i) => new OxyPlot.DataPoint(i * Analyzer.SecondPerIndex, x)));
+			plot2.Model = SetPowergram(Analyzer.PowerTime.Select((x, i) => new OxyPlot.DataPoint(i * Analyzer.SecondPerIndex, x)));
 			plot2.InvalidatePlot();
 			plot.InvalidatePlot();
+
+			DevelopManager.SetSource(Analyzer.FreqTime, Analyzer.PowerTime);
 		}
 
 		OxyPlot.PlotModel SetSpector(IEnumerable<OxyPlot.DataPoint> data)
@@ -69,7 +71,7 @@ namespace SynthTree
 				Position = OxyPlot.Axes.AxisPosition.Bottom,
 				Title = "Freq",
 			});
-			series = new OxyPlot.Series.LineSeries();
+			var series = new OxyPlot.Series.LineSeries();
 			series.Points.AddRange(data);
 			model.Series.Add(series);
 			return model;

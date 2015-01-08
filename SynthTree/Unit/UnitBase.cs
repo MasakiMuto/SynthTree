@@ -76,23 +76,22 @@ namespace SynthTree.Unit
 			Connect(old, oldIndex, newOutput, newOutputIndex);
 		}
 
-		protected void Require()
+		protected void Require(long t)
 		{
-			if (this.In.Length == 0)
+			if (this.Count == t + 1)
 			{
-				Update();
 				return;
 			}
-			else
+			if (Out.Length > 0 && this.Count == Out[0].ToUnit.Count + 1)
 			{
-				foreach (var item in In)
-				{
-					item.FromUnit.Require();
-				}
-				Update();
+				return;
 			}
+			foreach (var item in In)
+			{
+				item.FromUnit.Require(t);
+			}
+			Update();
 		}
-		
 
 	}
 

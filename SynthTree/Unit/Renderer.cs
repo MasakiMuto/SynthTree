@@ -13,9 +13,9 @@ namespace SynthTree.Unit
 			base.Update();
 		}
 
-		public double RequireValue()
+		public double RequireValue(long t)
 		{
-			Require();
+			Require(t);
 			return In[0].Value;
 		}
 

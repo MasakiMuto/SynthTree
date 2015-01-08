@@ -18,7 +18,7 @@ namespace AudioLib
 		public double[] Freq { get; private set; }
 		public double FreqPerIndex { get { return SampleRate / (double)WindowSize; } }
 		public double SecondPerIndex { get { return 1.0 / (SampleRate / FreqPerSample); } }
-		readonly int FreqPerSample = 80;//何サンプルごとにスペクトルを計算するか
+		readonly int FreqPerSample = 1;//何サンプルごとにスペクトルを計算するか
 		public double[,] Spectrogram;
 		public double[] FreqTime;//時間ごと最大成分周波数
 		public double[] PowerTime;//時間ごとボリューム(デシベル)

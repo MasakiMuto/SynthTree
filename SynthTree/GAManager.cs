@@ -27,7 +27,7 @@ namespace SynthTree
 		public void Start(Tree.RootNode tree)
 		{
 			Ready = true;
-			pool.Init(tree);
+			pool.Init(tree, 0);
 		}
 
 		//public void Start(SynthParam adam)
@@ -61,29 +61,27 @@ namespace SynthTree
 			return Task.Run(()=>Play(index));
 		}
 
-		//public void Update(IEnumerable<int> saved)
-		//{
-		//	if (!saved.Any()) return;
-		//	var a = saved.ToArray();
-		//	if (a.Length == 1)
-		//	{
-		//		pool.Init(pool[a[0]], a[0]);
-		//		return;
-		//	}
-		//	else
-		//	{
-		//		pool.CrossOver(a);
-		//	}
-		//}
-		
-		//public void Save(int index)
-		//{
-		//	if (!Ready) return;
-		//	using (var synth = new SynthEngine())
-		//	{
-		//		synth.SaveTo(pool[index], "test.wav");
-		//	}
-		//}
+		public void Update(IEnumerable<int> saved)
+		{
+			if (!saved.Any()) return;
+			var a = saved.ToArray();
+			if (a.Length == 1)
+			{
+				pool.Init(pool[a[0]].Tree, a[0]);
+				//pool.Init(pool[a[0]], a[0]);
+				return;
+			}
+			else
+			{
+				pool.CrossOver(a);
+			}
+		}
+
+		public void Save(int index)
+		{
+			if (!Ready) return;
+			System.IO.File.Copy(pool[index].Sound, "result.wav", true);
+		}
 
 
 	}

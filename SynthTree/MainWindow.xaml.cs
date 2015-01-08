@@ -27,6 +27,7 @@ namespace SynthTree
 		Tree.RootNode tree;
 
 		AudioLib.Recorder recorder;
+		AnalyzeWindow analyzer;
 
 		public MainWindow()
 		{
@@ -46,7 +47,8 @@ namespace SynthTree
 				grid.Children.Add(item);
 			}
 			recorder = new AudioLib.Recorder();
-			new AnalyzeWindow().Show();
+			analyzer = new AnalyzeWindow();
+			analyzer.Show();
 		}
 
 		void GenerateClick(object sender, RoutedEventArgs e)
@@ -58,8 +60,10 @@ namespace SynthTree
 
 		private void StartButtonClick(object sender, RoutedEventArgs e)
 		{
+			Cursor = Cursors.Wait;
 			Manager.Start(tree);
 
+			Cursor = null;
 			//var dev = new DevelopManager();
 			//using(var f =new FileUtil("test1.wav"))
 			//{
@@ -76,7 +80,7 @@ namespace SynthTree
 			var target = soundControls.FirstOrDefault(x => x.IsChecked);
 			if (target != null)
 			{
-				
+				Manager.Save(target.Index);
 			}
 		}
 
@@ -91,7 +95,9 @@ namespace SynthTree
 
 		private void NextButtonClick(object sender, RoutedEventArgs e)
 		{
-			//Manager.Update(soundControls.Where(x => x.IsChecked).Select(x=>x.Index));
+			Cursor = Cursors.Wait;
+			Manager.Update(soundControls.Where(x => x.IsChecked).Select(x=>x.Index));
+			Cursor = null;
 		}
 
 		void RecordButtonClick(object sender, RoutedEventArgs e)

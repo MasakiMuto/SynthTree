@@ -13,7 +13,7 @@ namespace SynthTree
 		const uint ChunkSize = 16;
 		const ushort CompressionCode = 1;
 		const ushort Channels = 1;
-		public const uint SampleRate = 44100;
+		public const uint SampleRate = 8000;
 		const ushort Bit = 16;
 		const uint Bps = SampleRate * Bit / 8;
 		const ushort BlockAlign = Bit / 8;
@@ -41,7 +41,7 @@ namespace SynthTree
 
 		void WriteValue(float val)
 		{
-			val *= 4f;
+			//val *= 4f;
 			if (val > 1f)
 			{
 				val = 1f;
@@ -50,24 +50,22 @@ namespace SynthTree
 			{
 				val = -1f;
 			}
-			sample += val;
-			acc++;
-			if (SampleRate == 44100 || acc == 2)
+			sample = val;
+			if (Bit == 16)
 			{
-				sample /= acc;
-				acc = 0;
-				if (Bit == 16)
-				{
-					short isample = (short)(sample * 32000);
-					writer.Write(isample);
-				}
-				else
-				{
-					byte isample = (byte)(sample * 127 + 128);
-					writer.Write(isample);
-				}
-				sample = 0f;
+				short isample = (short)(sample * 32760);
+				writer.Write(isample);
 			}
+			else if(Bit == 8)
+			{
+				byte isample = (byte)(sample * 127 + 128);
+				writer.Write(isample);
+			}
+			else
+			{
+				throw new NotImplementedException();
+			}
+			
 			sampleCount++;
 		}
 

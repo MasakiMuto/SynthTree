@@ -29,11 +29,8 @@ namespace SynthTree
 
 		public Unit.Renderer CreateEmbryo()
 		{
-			var src0 = new Unit.ConstantSource()
-			{
-				Value = .008
-			};
-			var src1 = new Unit.WaveSource();
+			var src0 = new Unit.TableSource(freqTable);
+			var src1 = new Unit.TableSource(powerTable);
 			var stub = new Unit.Multiplier();
 			var render = new Unit.Renderer();
 			Unit.UnitBase.Connect(src0, 0, stub, 0);
@@ -42,6 +39,21 @@ namespace SynthTree
 			firstPoint = stub;
 
 			return render;
+		}
+
+		static double[] freqTable, powerTable;
+		public static int TableLength { get; private set; }
+
+		static DevelopManager()
+		{
+			SetSource(Enumerable.Repeat(440.0, 4000).ToArray(), Enumerable.Repeat(1.0, 4000).ToArray());
+		}
+
+		public static void SetSource(double[] freq, double[] power)
+		{
+			freqTable = freq;
+			powerTable = power;
+			TableLength = Math.Min(freq.Length, powerTable.Length);
 		}
 
 

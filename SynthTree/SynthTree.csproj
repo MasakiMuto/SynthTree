@@ -90,6 +90,7 @@
     <Compile Include="Unit\ConstantSource.cs" />
     <Compile Include="Unit\Multiplier.cs" />
     <Compile Include="Unit\Splitter.cs" />
+    <Compile Include="Unit\TableSource.cs" />
     <Compile Include="Unit\WaveSource.cs" />
     <Compile Include="Util\KeyValueSet.cs" />
     <Compile Include="Util\TreeVisualizer.cs" />

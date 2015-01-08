@@ -21,7 +21,7 @@ namespace SynthTree
 				Sound = System.IO.Path.GetTempFileName();
 				using (var f = new FileUtil(Sound))
 				{
-					f.Write(Enumerable.Range(0, 44100).Select(x => (float)Topology.RequireValue()));
+					f.Write(Enumerable.Range(0, DevelopManager.TableLength).Select(x => (float)Topology.RequireValue(x)));
 				}
 			}
 
@@ -45,11 +45,15 @@ namespace SynthTree
 		/// 1個体をオリジナルに変異体で構成する
 		/// </summary>
 		/// <param name="p"></param>
-		public void Init(Tree.RootNode p)
+		public void Init(Tree.RootNode p, int index)
 		{
-			items[0] = new ItemSet(p);
-			for (int i = 1; i < items.Length; i++)
+			items[index] = new ItemSet(p);
+			for (int i = 0; i < items.Length; i++)
 			{
+				if (index == i)
+				{
+					continue;
+				}
 				var t = p.CloneTree();
 				t.Mutate(rand);
 				items[i] = new ItemSet(t);
