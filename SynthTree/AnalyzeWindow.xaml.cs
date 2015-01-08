@@ -39,12 +39,25 @@ namespace SynthTree
 
 		OxyPlot.Series.LineSeries series;
 
-		void OpenFile(string fn)
+		async void OpenFile(string fn)
 		{
+			this.Cursor = Cursors.Wait;
 			var analyzer = new AudioLib.Analyzer(fn);
-			analyzer.Dft();
-			analyzer.CalcSpectrogram();
-			analyzer.CalcPower();
+			//analyzer.Dft();
+			//analyzer.CalcSpectrogram();
+			await Task.Run(() => analyzer.CalcPower());
+			await Task.Run(() => analyzer.CalcPitch());
+			this.Cursor = null;
+			//SetSpector(analyzer.Freq.Select((x, i) => new OxyPlot.DataPoint(analyzer.FreqPerIndex * i, x)));
+
+			plot.Model = SetSpectrogram(analyzer.FreqTime.Select((x, i) => new OxyPlot.DataPoint(i * analyzer.SecondPerIndex, x)));
+			plot2.Model = SetPowergram(analyzer.PowerTime.Select((x, i) => new OxyPlot.DataPoint(i * analyzer.SecondPerIndex, x)));
+			plot2.InvalidatePlot();
+			plot.InvalidatePlot();
+		}
+
+		OxyPlot.PlotModel SetSpector(IEnumerable<OxyPlot.DataPoint> data)
+		{
 			var model = new OxyPlot.PlotModel();
 			model.Axes.Add(new OxyPlot.Axes.LinearAxis()
 			{
@@ -57,15 +70,9 @@ namespace SynthTree
 				Title = "Freq",
 			});
 			series = new OxyPlot.Series.LineSeries();
-			series.Points.AddRange(analyzer.Freq.Select((x, i) => new OxyPlot.DataPoint(analyzer.FreqPerIndex * i, x)));
+			series.Points.AddRange(data);
 			model.Series.Add(series);
-			plot.Model = model;
-			plot.InvalidatePlot();
-
-			plot.Model = SetSpectrogram(analyzer.FreqTime.Select((x, i) => new OxyPlot.DataPoint(i * analyzer.SecondPerIndex, x)));
-			plot2.Model = SetPowergram(analyzer.PowerTime.Select((x, i) => new OxyPlot.DataPoint(i * analyzer.SecondPerIndex, x)));
-			plot2.InvalidatePlot();
-			plot.InvalidatePlot();
+			return model;
 		}
 
 		OxyPlot.PlotModel SetPowergram(IEnumerable<OxyPlot.DataPoint> data)
@@ -94,7 +101,7 @@ namespace SynthTree
 		{
 			var model = new OxyPlot.PlotModel()
 			{
-				Title = "spectrogram/powergram"
+				Title = "pitch"
 			};
 			model.Axes.Add(new OxyPlot.Axes.LinearAxis()
 			{
@@ -111,6 +118,11 @@ namespace SynthTree
 			series.Points.AddRange(spec);
 			model.Series.Add(series);
 			return model;
+		}
+
+		private void Window_Closed(object sender, EventArgs e)
+		{
+			App.Current.Shutdown();
 		}
 
 		

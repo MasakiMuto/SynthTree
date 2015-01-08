@@ -12,13 +12,13 @@ namespace AudioLib
 {
 	public class Analyzer
 	{
-		readonly int WindowSize = 512;
+		readonly int WindowSize = 0;
 		readonly float[] sound;
 		readonly int SampleRate;
 		public double[] Freq { get; private set; }
 		public double FreqPerIndex { get { return SampleRate / (double)WindowSize; } }
 		public double SecondPerIndex { get { return 1.0 / (SampleRate / FreqPerSample); } }
-		readonly int FreqPerSample = 10;//何サンプルごとにスペクトルを計算するか
+		readonly int FreqPerSample = 80;//何サンプルごとにスペクトルを計算するか
 		public double[,] Spectrogram;
 		public double[] FreqTime;//時間ごと最大成分周波数
 		public double[] PowerTime;//時間ごとボリューム(デシベル)
@@ -101,14 +101,50 @@ namespace AudioLib
 		{
 			const int Length = 512;
 			PowerTime = new double[ActualDataLength / FreqPerSample];
-			for (int i = 0; i < PowerTime.Length; i++)
-			{
-
-				PowerTime[i] = sound.Skip(i * FreqPerSample).Take(Length)
+			PowerTime = Enumerable.Range(0, (int)ActualDataLength / FreqPerSample)
+				//.AsParallel()
+				.Select(i => sound
+					.Skip(i * FreqPerSample)
+					.Take(Length)
 					.Select(x => x * x)
+					.Sum())
+				.Select(x => Math.Sqrt(x / Length))
+				.ToArray();
+				
+		}
+
+		const int AutoCorrelationLength = 512;
+
+		public void CalcPitch()
+		{
+			FreqTime = new double[ActualDataLength / FreqPerSample];
+			FreqTime = Enumerable.Range(0, (int)((ActualDataLength - AutoCorrelationLength * 2) / FreqPerSample - 1))
+				.Select(x => x * FreqPerSample + WindowSize / 2)
+				//.AsParallel()
+				.Select(x => CalcPitch(x))
+				.ToArray();
+		}
+
+		double CalcPitch(int from)
+		{
+			
+			var r = new double[AutoCorrelationLength];
+			double tmp = double.NegativeInfinity;
+			int max = 0;
+			for (int i = 0; i < AutoCorrelationLength; i++)
+			{
+				r[i] = Enumerable.Range(0, AutoCorrelationLength - 1)
+					.Select(t => sound[t + from] * sound[i + t + from])
 					.Sum();
-				PowerTime[i] = Math.Sqrt(PowerTime[i] / Length);
+				r[i] /= r[0];
+				if (i > 0 && r[i] > tmp)
+				{
+					max = i;
+					tmp = r[i];
+				}
 			}
+			return SampleRate / (double)max;
+	
 		}
 
 
