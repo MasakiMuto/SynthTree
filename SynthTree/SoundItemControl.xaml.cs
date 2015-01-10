@@ -45,12 +45,14 @@ namespace SynthTree
 		{
 			Activate();
 			await window.Manager.PlaySync(Index);
+			await Task.Delay(500);
 			Deactivate();
 		}
 
 		public void Activate()
 		{
 			Background = Brushes.Red;
+			InvalidateVisual();
 		}
 
 		public void Deactivate()

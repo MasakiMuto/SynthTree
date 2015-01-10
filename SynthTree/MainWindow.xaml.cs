@@ -89,7 +89,7 @@ namespace SynthTree
 			for (int i = 0; i < soundControls.Length; i++)
 			{
 				await soundControls[i].Play();
-				await Task.Delay(300);
+				//await Task.Delay(300);
 			}
 		}
 
