@@ -42,6 +42,7 @@ namespace AudioLib
 		public Analyzer(float[] data, int sampleRate)
 		{
 			sound = data;
+			ActualDataLength = sound.Length;
 			SampleRate = sampleRate;
 		}
 

@@ -40,6 +40,20 @@ namespace SynthTree
 				}
 			}
 
+			public double CompareTo(ItemSet another)
+			{
+				double s = 0;
+				for (int i = 0; i < Analyzer.Spectrogram.GetLength(0); i++)
+				{
+					for (int j = 0; j < Analyzer.Spectrogram.GetLength(1); j++)
+					{
+						s += Math.Pow(Analyzer.Spectrogram[i, j] - another.Analyzer.Spectrogram[i, j], 2);
+					}
+				}
+				s /= Analyzer.Spectrogram.GetLength(0);//frame length
+				return s;
+			}
+
 		}
 
 		public static ItemPool Instance { get; private set; }
@@ -72,7 +86,18 @@ namespace SynthTree
 				var t = p.CloneTree();
 				t.Mutate(rand);
 				items[i] = new ItemSet(t);
+				if (!Check(items[index], items[i]))
+				{
+					i--;
+					continue;
+				}
 			}
+		}
+
+		bool Check(ItemSet origin, ItemSet another)
+		{
+			var s = origin.CompareTo(another);
+			return s > 1;
 		}
 
 		public void CrossOver(int[] index)
