@@ -13,15 +13,30 @@ namespace SynthTree
 			public readonly Tree.RootNode Tree;
 			public readonly Unit.Renderer Topology;
 			public readonly string Sound;
+			public readonly AudioLib.Analyzer Analyzer;
+			public readonly float[] Data;
 
 			public ItemSet(Tree.RootNode tree)
 			{
 				Tree = tree;
 				Topology = DevelopManager.DevelopTopology(tree);
 				Sound = System.IO.Path.GetTempFileName();
+				Data = Enumerable.Range(0, DevelopManager.TableLength).Select(x => (float)Topology.RequireValue(x)).ToArray();
+				Normalize();
+				Analyzer = new AudioLib.Analyzer(Data, (int)FileUtil.SampleRate);
+				Analyzer.CalcSpectrogram();
 				using (var f = new FileUtil(Sound))
 				{
-					f.Write(Enumerable.Range(0, DevelopManager.TableLength).Select(x => (float)Topology.RequireValue(x)));
+					f.Write(Data);
+				}
+			}
+
+			void Normalize()
+			{
+				float absMax = Data.Select(x => Math.Abs(x)).Max();
+				for (int i = 0; i < Data.Length; i++)
+				{
+					Data[i] /= absMax;
 				}
 			}
 

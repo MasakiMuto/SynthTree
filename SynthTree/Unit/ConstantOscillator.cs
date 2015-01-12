@@ -11,11 +11,14 @@ namespace SynthTree.Unit
 		public double Constant;
 		public double Phase;
 
+		double val;
+
 		public override void Update()
 		{
 			base.Update();
 			Out[0].Value = Constant;
-			Out[1].Value = Math.Sin(In[0].Value + Phase);
+			val += In[0].Value;
+			Out[1].Value = Math.Sin(val + Phase * Math.PI * 2);
 		}
 
 		public override string ToString()
