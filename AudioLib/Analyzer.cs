@@ -12,13 +12,14 @@ namespace AudioLib
 {
 	public class Analyzer
 	{
-		readonly int WindowSize = 0;
+		readonly int WindowSize = 512;
+		readonly int NoOverlap = 256;
 		readonly float[] sound;
 		readonly int SampleRate;
 		public double[] Freq { get; private set; }
 		public double FreqPerIndex { get { return SampleRate / (double)WindowSize; } }
 		public double SecondPerIndex { get { return 1.0 / (SampleRate / FreqPerSample); } }
-		readonly int FreqPerSample = 1;//何サンプルごとにスペクトルを計算するか
+		readonly int FreqPerSample = 10;//何サンプルごとにスペクトルを計算するか
 		public double[,] Spectrogram;
 		public double[] FreqTime;//時間ごと最大成分周波数
 		public double[] PowerTime;//時間ごとボリューム(デシベル)
@@ -29,59 +30,47 @@ namespace AudioLib
 			using (var file = new WaveFileReader(fileName))
 			{
 				ActualDataLength = file.SampleCount / file.WaveFormat.Channels;
-				sound = new float[ActualDataLength + WindowSize];//-WindowSize/2 ~ 0と Length ~ Length + WindowSize/2はダミー
+				sound = new float[ActualDataLength];
 				for (int i = 0; i < ActualDataLength; i++)
 				{
-					sound[i + WindowSize / 2] = file.ReadNextSampleFrame()[0];
+					sound[i] = file.ReadNextSampleFrame()[0];
 				}
 				SampleRate = file.WaveFormat.SampleRate;
 			}
-			//Dft();
 		}
 
 		public Analyzer(float[] data, int sampleRate)
 		{
-			sound = data.Clone() as float[];
+			sound = data;
 			SampleRate = sampleRate;
-			//Dft();
+		}
+
+		IEnumerable<double> GetWindowedData(int from, int length)
+		{
+			var window = Window.Hamming(length);
+			return Enumerable.Range(from, length)
+				.Select(x => sound.ElementAtOrDefault(x))
+				.Select((x, j) => x * window[j]);
 		}
 
 		public void CalcSpectrogram()
 		{
-			var window = Window.Hamming(WindowSize);
-			Spectrogram = new double[ActualDataLength / FreqPerSample, WindowSize / 2];
-			FreqTime = new double[Spectrogram.GetLength(0)];
-			PowerTime = new double[Spectrogram.GetLength(0)];
-			for (int m = 0; m < Spectrogram.GetLength(0); m++)
-			{
-				var w = sound.Skip(m * FreqPerSample)
-					.Take(WindowSize)
-					.Select((x, i) => x * (float)window[i])
-					.Select(x => new Complex(x, 0))
-					.ToArray();
-				//if (w.Length < WindowSize)
-				//{
-				//	w = w.Concat(Enumerable.Repeat(new Complex(0, 0), WindowSize - w.Length)).ToArray();
-				//}
-				Fourier.Radix2Forward(w, FourierOptions.Matlab);
-				double tmp = -1;
-				for (int i = 0; i < Spectrogram.GetLength(1); i++)
+			int FrameOverlap = WindowSize / 2;
+			int NoOverlap = WindowSize - FrameOverlap;
+			Spectrogram = new double[ActualDataLength / NoOverlap, WindowSize / 2];
+			Enumerable.Range(0, Spectrogram.GetLength(0))
+				.AsParallel()
+				.ForAll(i =>
 				{
-					var mag = w[i].Magnitude;
-					Spectrogram[m, i] = mag;
-					if (mag > tmp)
+					var w = GetWindowedData(i * NoOverlap - WindowSize / 2, WindowSize)
+						.Select(x=>new Complex(x, 0))
+						.ToArray();
+					Fourier.Radix2Forward(w, FourierOptions.Matlab);
+					for (int j = 0; j < w.Length / 2; j++)
 					{
-						FreqTime[m] = i * this.FreqPerIndex;
-						tmp = mag;
-					}
-					PowerTime[m] += mag;
-				}
-				PowerTime[m] = Math.Log10(PowerTime[m]);
-				//var w = sound.Select((x, j) => x * (float)window[j]).Select(x => new Complex(x, 0)).ToArray();
-				//Fourier.Forward(w, FourierOptions.Matlab);
-				//Freq = w.Take(w.Length / 2).Select(x => x.Magnitude).ToArray();
-
-			}
+						Spectrogram[i, j] = w[j].Magnitude;
+					}				
+				});
 		}
 
 		public void Dft()
@@ -97,31 +86,58 @@ namespace AudioLib
 
 		}
 
+		/// <summary>
+		/// 長さActualDataLengthの配列
+		/// </summary>
 		public void CalcPower()
 		{
-			const int Length = 512;
-			PowerTime = new double[ActualDataLength / FreqPerSample];
-			PowerTime = Enumerable.Range(0, (int)ActualDataLength / FreqPerSample)
-				//.AsParallel()
-				.Select(i => sound
-					.Skip(i * FreqPerSample)
-					.Take(Length)
-					.Select(x => x * x)
-					.Sum())
-				.Select(x => Math.Sqrt(x / Length))
+			var tmp = Enumerable.Range(0, (int)ActualDataLength / NoOverlap)
+				.Select(i => CalcPower(i))
 				.ToArray();
-				
+			PowerTime = new double[NoOverlap * tmp.Length];
+			for (int i = 0; i < tmp.Length - 1; i++)
+			{
+				var step = (tmp[i+1] - tmp[i]) / NoOverlap;
+				for (int j = 0; j < NoOverlap; j++)
+				{
+					PowerTime[i * NoOverlap + j] = tmp[i] + step * j;
+				}
+			}
+		}
+
+		double CalcPower(int from)
+		{
+			var index = Enumerable.Range(from * NoOverlap - NoOverlap, WindowSize)
+				.SkipWhile(x=>x < 0)
+				.TakeWhile(x=> x < ActualDataLength);
+			int c = 0;
+			double s = 0;
+			foreach (var i in index)
+			{
+				s += sound[i] * sound[i];
+				c++;
+			}
+			if (c == 0)
+			{
+				return 0;
+			}
+			else
+			{
+				return s / c;
+			}
 		}
 
 		const int AutoCorrelationLength = 512;
 
+		/// <summary>
+		/// 
+		/// </summary>
 		public void CalcPitch()
 		{
-			FreqTime = new double[ActualDataLength / FreqPerSample];
 			FreqTime = Enumerable.Range(0, (int)((ActualDataLength - AutoCorrelationLength * 2) / FreqPerSample - 1))
 				.Select(x => x * FreqPerSample + WindowSize / 2)
-				//.AsParallel()
 				.Select(x => CalcPitch(x))
+				.SelectMany(x=>Enumerable.Repeat(x, FreqPerSample))
 				.ToArray();
 		}
 
