@@ -83,8 +83,22 @@ namespace AudioLib
 				.Select(x => new Complex(x, 0)).ToArray();
 			Fourier.Forward(w, FourierOptions.Matlab);
 			Freq = w.Take(w.Length / 2).Select(x => x.Magnitude).ToArray();
-	
+		}
 
+		void CalcInner(ref double[] target, Func<int, double> func)
+		{
+			var tmp = Enumerable.Range(0, (int)ActualDataLength / NoOverlap)
+				.Select(i => func(i))
+				.ToArray();
+			target = new double[NoOverlap * tmp.Length];
+			for (int i = 0; i < tmp.Length - 1; i++)
+			{
+				var step = (tmp[i + 1] - tmp[i]) / NoOverlap;
+				for (int j = 0; j < NoOverlap; j++)
+				{
+					target[i * NoOverlap + j] = tmp[i] + step * j;
+				}
+			}
 		}
 
 		/// <summary>
@@ -92,30 +106,24 @@ namespace AudioLib
 		/// </summary>
 		public void CalcPower()
 		{
-			var tmp = Enumerable.Range(0, (int)ActualDataLength / NoOverlap)
-				.Select(i => CalcPower(i))
-				.ToArray();
-			PowerTime = new double[NoOverlap * tmp.Length];
-			for (int i = 0; i < tmp.Length - 1; i++)
-			{
-				var step = (tmp[i+1] - tmp[i]) / NoOverlap;
-				for (int j = 0; j < NoOverlap; j++)
-				{
-					PowerTime[i * NoOverlap + j] = tmp[i] + step * j;
-				}
-			}
+			CalcInner(ref PowerTime, CalcPower);
+		}
+
+		IEnumerable<float> CreateFrame(int from)
+		{
+			return Enumerable.Range(from * NoOverlap - NoOverlap, WindowSize)
+				.SkipWhile(x => x < 0)
+				.TakeWhile(x => x < ActualDataLength)
+				.Select(x => sound[x]);
 		}
 
 		double CalcPower(int from)
 		{
-			var index = Enumerable.Range(from * NoOverlap - NoOverlap, WindowSize)
-				.SkipWhile(x=>x < 0)
-				.TakeWhile(x=> x < ActualDataLength);
 			int c = 0;
 			double s = 0;
-			foreach (var i in index)
+			foreach (var i in CreateFrame(from))
 			{
-				s += sound[i] * sound[i];
+				s += i * i; ;
 				c++;
 			}
 			if (c == 0)
@@ -135,16 +143,14 @@ namespace AudioLib
 		/// </summary>
 		public void CalcPitch()
 		{
-			FreqTime = Enumerable.Range(0, (int)((ActualDataLength - AutoCorrelationLength * 2) / FreqPerSample - 1))
-				.Select(x => x * FreqPerSample + WindowSize / 2)
-				.Select(x => CalcPitch(x))
-				.SelectMany(x=>Enumerable.Repeat(x, FreqPerSample))
-				.ToArray();
+			CalcInner(ref FreqTime, CalcPitch);
 		}
 
 		double CalcPitch(int from)
 		{
-			
+			var f = CreateFrame(from).ToArray();
+
+
 			var r = new double[AutoCorrelationLength];
 			double tmp = double.NegativeInfinity;
 			int max = 0;
