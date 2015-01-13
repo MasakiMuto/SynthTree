@@ -42,10 +42,7 @@ namespace SynthTree
 		{
 			if (!Ready) return;
 			var param = pool[index];
-			using (var s = new System.Media.SoundPlayer(param.Sound))
-			{
-				s.Play();
-			}
+			param.Play();
 		}
 
 		public void Visualize(int index)

@@ -54,7 +54,8 @@ namespace SynthTree
 		void GenerateClick(object sender, RoutedEventArgs e)
 		{
 			tree = DevelopManager.CreateInitialTree();
-			Util.Visualizer.ShowTree(tree);
+			//Util.Visualizer.ShowTree(tree);
+			new ItemPool.ItemSet(tree).Play();
 		}
 		
 

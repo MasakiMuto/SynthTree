@@ -54,6 +54,14 @@ namespace SynthTree
 				return s;
 			}
 
+			public void Play()
+			{
+				using (var audio = new System.Media.SoundPlayer(Sound))
+				{
+					audio.Play();
+				}
+			}
+
 		}
 
 		public static ItemPool Instance { get; private set; }
