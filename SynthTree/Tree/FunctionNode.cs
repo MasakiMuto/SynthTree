@@ -33,10 +33,11 @@ namespace SynthTree.Tree
 			InheritTarget();
 			if (obj is Unit.ConstantOscillator)
 			{
-				AssertChildren(3);
+				AssertChildren(4);
 				var o = obj as Unit.ConstantOscillator;
 				o.Constant = (Children[1] as Constant).Value;
 				o.Phase = (Children[2] as Constant).Value;
+				o.WaveFormValue = (Children[3] as Constant).Value;
 			}
 			else
 			{
@@ -58,7 +59,7 @@ namespace SynthTree.Tree
 			//}
 			if (type == typeof(Unit.ConstantOscillator))
 			{
-				return new[] { Level > MaxLevel ? NodeType.End : NodeType.FlagB, NodeType.Constant, NodeType.Constant }
+				return new[] { Level > MaxLevel ? NodeType.End : NodeType.FlagB, NodeType.Constant, NodeType.Constant, NodeType.Constant }
 					.Select(x => TreeGenerator.GetNode(x, Level))
 					.ToArray();
 			}
