@@ -13,10 +13,18 @@ namespace SynthTree.Tree
 			{typeof(Unit.Adder), NodeType.Add},
 			{typeof(Unit.Multiplier), NodeType.Mult},
 			{typeof(Unit.Splitter), NodeType.Split},
-			{typeof(Unit.ConstantOscillator), NodeType.Oscil}
+			{typeof(Unit.ConstantOscillator), NodeType.Oscil},
+			{typeof(Unit.Filter), NodeType.Filter},
 		};
 
+		static Type[] typeA;
+
 		Type type;
+
+		static FunctionNode()
+		{
+			typeA = new[]{typeof(Unit.Adder), typeof(Unit.Multiplier), typeof(Unit.Filter)};
+		}
 
 		public FunctionNode()
 			: base()
@@ -39,11 +47,26 @@ namespace SynthTree.Tree
 				o.Phase = (Children[2] as Constant).Value;
 				o.WaveFormValue = (Children[3] as Constant).Value;
 			}
+			else if (obj is Unit.Filter)
+			{
+				AssertChildren(6);
+				var o = obj as Unit.Filter;
+				o.LpCutoff = GetChildConstant(1);
+				o.LpSweep = GetChildConstant(2);
+				o.LpResonance = GetChildConstant(3);
+				o.HpCutoff = GetChildConstant(4);
+				o.HpSweep = GetChildConstant(5);
+			}
 			else
 			{
 				AssertChildren(1);
 			}
 
+		}
+
+		double GetChildConstant(int i)
+		{
+			return (Children[i] as Constant).Value;
 		}
 
 		public override string ToString()
@@ -63,11 +86,18 @@ namespace SynthTree.Tree
 					.Select(x => TreeGenerator.GetNode(x, Level))
 					.ToArray();
 			}
+			else if (type == typeof(Unit.Filter))
+			{
+				return new[] { Level> MaxLevel ? NodeType.End : NodeType.FlagA,
+					NodeType.Constant, NodeType.Constant, NodeType.Constant, NodeType.Constant, NodeType.Constant }
+					.Select(x => TreeGenerator.GetNode(x, Level))
+					.ToArray();
+			}
 			else if (Level > MaxLevel)
 			{
 				return new[] { TreeGenerator.GetNode(NodeType.End, Level) };
 			}
-			else if (type == typeof(Unit.Adder) || type == typeof(Unit.Multiplier))
+			else if (typeA.Contains(type))
 			{
 				return new[] { TreeGenerator.GetNode(NodeType.FlagA, Level) };
 			}

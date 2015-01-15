@@ -81,6 +81,7 @@ namespace SynthTree
 			{
 				item.Process();
 			}
+			man.render.InitAll();
 			return man.render;
 		}
 	}

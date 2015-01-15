@@ -16,6 +16,7 @@ namespace SynthTree.Unit
 		public virtual void Update()
 		{
 			Count++;
+			Debug.Assert(InitCount > 0);
 		}
 
 		public static readonly int DefaultIndex = -1;
@@ -91,6 +92,35 @@ namespace SynthTree.Unit
 				item.FromUnit.Require(t);
 			}
 			Update();
+		}
+
+		protected int InitCount { get; private set; }
+		
+		protected void Init(int c) 
+		{
+			if (this.InitCount == c + 1)
+			{
+				return;
+			}
+			foreach (var item in In)
+			{
+				item.FromUnit.Init(c);
+			}
+			Init();
+		}
+
+		public virtual void Init()
+		{
+			InitCount++;
+			Count = 0;
+			foreach (var item in In)
+			{
+				item.Init();
+			}
+			foreach (var item in Out)
+			{
+				item.Init();
+			}
 		}
 
 	}
@@ -178,6 +208,12 @@ namespace SynthTree.Unit
 		{
 			FromUnit = from;
 			ToUnit = to;
+		}
+
+		public void Init()
+		{
+			val = 0;
+			Count = 0;
 		}
 
 	}

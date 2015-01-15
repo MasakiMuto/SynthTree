@@ -19,6 +19,11 @@ namespace SynthTree.Unit
 			return In[0].Value;
 		}
 
+		public void InitAll()
+		{
+			Init(InitCount);
+		}
+
 		public override string ToString()
 		{
 			return "Renderer";
