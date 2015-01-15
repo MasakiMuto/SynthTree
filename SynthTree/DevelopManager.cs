@@ -46,7 +46,7 @@ namespace SynthTree
 
 		static DevelopManager()
 		{
-			SetSource(Enumerable.Repeat(440.0, 4000).ToArray(), Enumerable.Repeat(1.0, 4000).ToArray());
+			SetSource(Enumerable.Repeat(0.11, 4000).ToArray(), Enumerable.Repeat(1.0, 4000).ToArray());
 		}
 
 		public static void SetSource(double[] freq, double[] power)

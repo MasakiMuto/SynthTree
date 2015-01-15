@@ -9,6 +9,8 @@ namespace SynthTree.Unit
 {
 	public abstract class UnitBase
 	{
+		public static readonly int MaxFreq = 4000;
+
 		public Connection[] In;
 		public Connection[] Out;
 

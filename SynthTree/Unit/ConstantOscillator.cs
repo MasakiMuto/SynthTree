@@ -59,7 +59,7 @@ namespace SynthTree.Unit
 			base.Update();
 			Out[0].Value = Constant;
 			val += In[0].Value;
-			Out[1].Value = CalcWave(val + Phase * Math.PI * 2);
+			Out[1].Value = CalcWave(val * MaxFreq + Phase * Math.PI * 2);
 		}
 
 		double CalcWave(double phase)
