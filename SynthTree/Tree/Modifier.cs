@@ -139,6 +139,7 @@ namespace SynthTree.Tree
 		protected override TreeBase[] CreateChildren()
 		{
 			NodeType[] nt;
+			int wc;
 			var ta = NodeType.FlagA | NodeType.FlagType;
 			var tb = NodeType.FlagB | NodeType.FlagType;
 			var fa = Level > MaxLevel ? NodeType.End : NodeType.FlagA;
@@ -146,29 +147,26 @@ namespace SynthTree.Tree
 			switch (this.type)
 			{
 				case ModifierType.SeriesA1:
-					nt = new[] { fa, ta, tb, NodeType.FlagW, NodeType.FlagW, NodeType.FlagW };
+					nt = new[] { fa, ta, tb };
+					wc = 3;
 					break;
 				case ModifierType.ParallelA1:
-					nt = new[]{ fa, ta, ta,
-						tb, tb,
-						NodeType.FlagW, NodeType.FlagW, NodeType.FlagW, NodeType.FlagW, NodeType.FlagW, NodeType.FlagW};
+					nt = new[]{ fa, ta, ta, tb, tb};
+					wc = 6;
 					break;
 				case ModifierType.SeriesB1:
-					nt = new []{NodeType.FlagB, tb, ta,
-						NodeType.FlagW, NodeType.FlagW };
+					nt = new []{fb, tb, ta };
+					wc = 3;
 					break;
 				case ModifierType.ParallelB1:
-					nt = new []{NodeType.FlagB, tb, tb, ta, ta,
-						NodeType.FlagW, NodeType.FlagW, NodeType.FlagW, NodeType.FlagW, NodeType.FlagW, NodeType.FlagW};
+					nt = new[] { fb, tb, tb, ta, ta };
+					wc = 6;
 					break;
 				default:
 					throw new Exception();
 			}
-			//if (Level > MaxLevel)
-			//{
-			//	nt = new[] { NodeType.End };
-			//}
-			return nt.Select(x=>TreeGenerator.GetNode(x, Level)).ToArray();
+			
+			return nt/*.Concat(Enumerable.Repeat(NodeType.FlagW, wc))*/.Select(x=>TreeGenerator.GetNode(x, Level)).ToArray();
 		}
 
 		protected override TreeBase CloneSelf()
