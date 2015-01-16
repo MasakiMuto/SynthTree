@@ -34,6 +34,7 @@ namespace SynthTree
 		Add			   = 0x0c0,  //0_1100_0000
 		Mult		   = 0x0c1,  //0_1100_0001
 		Filter         = 0x0c2,  //0_1100_0010
+		Delay          = 0x0c4,  //0_1100_0100
 		Split		   = 0x0a0,  //0_1010_0000
 		Oscil		   = 0x0a1,  //0_1010_0001
 		SeriesA		   = 0x040,  //0_0100_0000
@@ -99,6 +100,8 @@ namespace SynthTree
 					return new FunctionNode<Multiplier>();
 				case NodeType.Filter:
 					return new FunctionNode<Filter>();
+				case NodeType.Delay:
+					return new FunctionNode<Delay>();
 				case NodeType.Split:
 					return new FunctionNode<Splitter>();
 				case NodeType.Oscil:

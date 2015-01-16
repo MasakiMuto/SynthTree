@@ -15,6 +15,7 @@ namespace SynthTree.Tree
 			{typeof(Unit.Splitter), NodeType.Split},
 			{typeof(Unit.ConstantOscillator), NodeType.Oscil},
 			{typeof(Unit.Filter), NodeType.Filter},
+			{typeof(Unit.Delay), NodeType.Delay},
 		};
 
 		static Type[] typeA;
@@ -23,7 +24,13 @@ namespace SynthTree.Tree
 
 		static FunctionNode()
 		{
-			typeA = new[]{typeof(Unit.Adder), typeof(Unit.Multiplier), typeof(Unit.Filter)};
+			typeA = new[]
+			{
+				typeof(Unit.Adder),
+				typeof(Unit.Multiplier), 
+				typeof(Unit.Filter), 
+				typeof(Unit.Delay)
+			};
 		}
 
 		public FunctionNode()
@@ -57,6 +64,13 @@ namespace SynthTree.Tree
 				o.HpCutoff = GetChildConstant(4);
 				o.HpSweep = GetChildConstant(5);
 			}
+			else if (obj is Unit.Delay)
+			{
+				AssertChildren(3);
+				var o = obj as Unit.Delay;
+				o.Offset = GetChildConstant(1);
+				o.Sweep = GetChildConstant(2);
+			}
 			else
 			{
 				AssertChildren(1);
@@ -76,36 +90,37 @@ namespace SynthTree.Tree
 
 		protected override TreeBase[] CreateChildren()
 		{
-			//if (Level > MaxLevel)
-			//{
-			//	return new[] { TreeGenerator.GetNode(NodeType.End) };
-			//}
-			if (type == typeof(Unit.ConstantOscillator))
+			NodeType head;
+			int constant = 0;
+			if (Level > MaxLevel)
 			{
-				return new[] { Level > MaxLevel ? NodeType.End : NodeType.FlagB, NodeType.Constant, NodeType.Constant, NodeType.Constant }
-					.Select(x => TreeGenerator.GetNode(x, Level))
-					.ToArray();
-			}
-			else if (type == typeof(Unit.Filter))
-			{
-				return new[] { Level> MaxLevel ? NodeType.End : NodeType.FlagA,
-					NodeType.Constant, NodeType.Constant, NodeType.Constant, NodeType.Constant, NodeType.Constant }
-					.Select(x => TreeGenerator.GetNode(x, Level))
-					.ToArray();
-			}
-			else if (Level > MaxLevel)
-			{
-				return new[] { TreeGenerator.GetNode(NodeType.End, Level) };
+				head = NodeType.End;
 			}
 			else if (typeA.Contains(type))
 			{
-				return new[] { TreeGenerator.GetNode(NodeType.FlagA, Level) };
+				head = SynthTree.NodeType.FlagA;
 			}
-			else if(type == typeof(Unit.Splitter))
+			else
 			{
-				return new[] { TreeGenerator.GetNode(NodeType.FlagB, Level) };
+				head = SynthTree.NodeType.FlagB;
 			}
-			throw new Exception();
+
+			if (type == typeof(Unit.ConstantOscillator))
+			{
+				constant = 3;
+			}
+			else if (type == typeof(Unit.Filter))
+			{
+				constant = 5;
+			}
+			else if(type == typeof(Unit.Delay))
+			{
+				constant = 2;
+			}
+
+			return Enumerable.Repeat(head, 1).Concat(Enumerable.Repeat(NodeType.Constant, constant))
+				.Select(x => TreeGenerator.GetNode(x, Level))
+				.ToArray();
 		}
 
 		protected override TreeBase CloneSelf()

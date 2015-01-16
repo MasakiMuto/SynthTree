@@ -88,6 +88,7 @@
     <Compile Include="Tree\TreeBase.cs" />
     <Compile Include="Unit\ConstantOscillator.cs" />
     <Compile Include="Unit\ConstantSource.cs" />
+    <Compile Include="Unit\Delay.cs" />
     <Compile Include="Unit\Filter.cs" />
     <Compile Include="Unit\Multiplier.cs" />
     <Compile Include="Unit\Splitter.cs" />
