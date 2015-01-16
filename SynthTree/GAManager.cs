@@ -13,6 +13,8 @@ namespace SynthTree
 
 		public static Random Random { get; private set; }
 
+		public ItemPool.ItemSet this[int i] { get { return pool[i]; } }
+
 		static GAManager()
 		{
 			Random = new Random();

@@ -1,17 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace SynthTree
 {
@@ -23,6 +16,8 @@ namespace SynthTree
 		public int Index { get; private set; }
 		readonly MainWindow window;
 		public bool IsChecked { get { return check.IsChecked.GetValueOrDefault(false); } }
+
+		ItemPool.ItemSet Item { get { return window.Manager[Index]; } }
 
 		public SoundItemControl(int index, MainWindow window)
 		{
@@ -38,13 +33,28 @@ namespace SynthTree
 
 		void VisualClick(object sneder, RoutedEventArgs e)
 		{
-			window.Manager.Visualize(Index);
+			if (Item != null)
+			{
+				Util.Visualizer.ShowTopology(Item.Topology);
+			}
+		}
+
+		void TreeClick(object sender, RoutedEventArgs e)
+		{
+			if (Item != null)
+			{
+				Util.Visualizer.ShowTree(Item.Tree);
+			}
 		}
 
 		public async Task Play()
 		{
+			if (Item == null)
+			{
+				return;
+			}
 			Activate();
-			await window.Manager.PlaySync(Index);
+			Item.Play();
 			await Task.Delay(500);
 			Deactivate();
 		}
