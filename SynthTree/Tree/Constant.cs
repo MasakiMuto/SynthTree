@@ -24,7 +24,7 @@ namespace SynthTree.Tree
 
 		public override string ToString()
 		{
-			return "const" + Value.ToString().Replace(".", "_"); ;
+			return "const";
 		}
 
 		protected override TreeBase[] CreateChildren()

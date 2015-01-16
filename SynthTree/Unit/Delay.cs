@@ -37,5 +37,10 @@ namespace SynthTree.Unit
 			buffer[c] = In[0].Value;
 			Out[0].Value = buffer[(c - Math.Min(1023, Math.Abs((int)phase)) + 1024) & 1023];
 		}
+
+		public override string ToString()
+		{
+			return "Delay";
+		}
 	}
 }
