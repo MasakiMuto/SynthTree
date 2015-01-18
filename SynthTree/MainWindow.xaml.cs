@@ -54,9 +54,12 @@ namespace SynthTree
 		void GenerateClick(object sender, RoutedEventArgs e)
 		{
 			tree = DevelopManager.CreateInitialTree();
+			//tree = Tree.RootNode.Deserialize("test.txt");
 			//Util.Visualizer.ShowTree(tree);
 			new ItemPool.ItemSet(tree).Play();
 		}
+
+
 		
 
 		private void StartButtonClick(object sender, RoutedEventArgs e)
@@ -82,6 +85,7 @@ namespace SynthTree
 			if (target != null)
 			{
 				Manager.Save(target.Index);
+				Manager[target.Index].Tree.Serialize("tree.bin");
 			}
 		}
 
@@ -112,6 +116,21 @@ namespace SynthTree
 				new RecordWindow(recorder).Show();
 				recorder.BeginRecord();
 			}
+		}
+
+		void LoadClick(object sender, RoutedEventArgs e)
+		{
+			var dialog = new Microsoft.Win32.OpenFileDialog()
+			{
+				AddExtension = true,
+				DefaultExt = "bin",
+				Filter = "tree binary|*.bin"
+			};
+			if (dialog.ShowDialog() ?? false)
+			{
+				tree = Tree.RootNode.Deserialize(dialog.FileName);
+			}
+			
 		}
 
 

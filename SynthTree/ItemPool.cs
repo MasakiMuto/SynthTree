@@ -71,11 +71,11 @@ namespace SynthTree
 
 		public ItemSet this[int i]{get{return items[i];}}
 
-		public ItemPool()
+		public ItemPool(int count)
 		{
 			Instance = this;
 			rand = new Random();
-			items = new ItemSet[10];
+			items = new ItemSet[count];
 		}
 
 		/// <summary>

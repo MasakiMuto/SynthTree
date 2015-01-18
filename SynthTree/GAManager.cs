@@ -23,7 +23,7 @@ namespace SynthTree
 		public GAManager()
 		{
 			Ready = false;
-			pool = new ItemPool();
+			pool = new ItemPool(9);
 		}
 
 		public void Start(Tree.RootNode tree)
@@ -80,6 +80,7 @@ namespace SynthTree
 		{
 			if (!Ready) return;
 			System.IO.File.Copy(pool[index].Sound, "result.wav", true);
+			pool[index].Tree.Serialize("test.txt");
 		}
 
 

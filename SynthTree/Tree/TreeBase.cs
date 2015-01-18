@@ -4,9 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.IO;
 
 namespace SynthTree.Tree
 {
+	[Serializable]
 	public abstract class TreeBase
 	{
 		public TreeBase Parent { get; private set; }
@@ -14,7 +18,7 @@ namespace SynthTree.Tree
 
 		public abstract void Process();
 
-		public Unit.UnitBase Target;
+		[NonSerialized] public Unit.UnitBase Target;
 
 		public int Index;
 
@@ -122,8 +126,11 @@ namespace SynthTree.Tree
 			next.Level = this.Level + 1;
 		}
 
+	
+
 	}
 
+	[Serializable]
 	public class Nop : TreeBase
 	{
 		public enum ConnectionType
@@ -194,6 +201,7 @@ namespace SynthTree.Tree
 
 	}
 
+	[Serializable]
 	public class EndA : TreeBase
 	{
 		public EndA()

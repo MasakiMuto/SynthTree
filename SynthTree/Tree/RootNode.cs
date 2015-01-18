@@ -1,12 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace SynthTree.Tree
 {
+	[Serializable]
 	public class RootNode : TreeBase
 	{
 		public RootNode()
@@ -93,6 +97,24 @@ namespace SynthTree.Tree
 		protected override TreeBase[] CreateChildren()
 		{
 			return new[] { TreeGenerator.GetNode(NodeType.FlagA | NodeType.FlagType, Level) };
+		}
+
+		public void Serialize(string fn)
+		{
+			IFormatter f = new BinaryFormatter();
+			using (var file = new FileStream(fn, FileMode.Create, FileAccess.Write))
+			{
+				f.Serialize(file, this);
+			}
+		}
+
+		public static RootNode Deserialize(string fn)
+		{
+			IFormatter f = new BinaryFormatter();
+			using (var file = new FileStream(fn, FileMode.Open, FileAccess.Read))
+			{
+				return f.Deserialize(file) as RootNode;
+			}
 		}
 
 

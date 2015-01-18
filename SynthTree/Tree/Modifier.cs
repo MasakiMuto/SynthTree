@@ -15,6 +15,7 @@ namespace SynthTree.Tree
 		ParallelB1,
 	}
 
+	[Serializable]
 	public class Modifier : TreeBase
 	{
 		readonly ModifierType type;

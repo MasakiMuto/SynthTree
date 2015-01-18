@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace SynthTree.Tree
 {
+	[Serializable]
 	public class Constant : TreeBase
 	{
 		public double Value;

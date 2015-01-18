@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace SynthTree.Tree
 {
+	[Serializable]
 	public class FunctionNode<T> : TreeBase where T : Unit.UnitBase
 	{
 		static readonly Dictionary<Type, NodeType> typeTable = new Dictionary<Type, NodeType>
