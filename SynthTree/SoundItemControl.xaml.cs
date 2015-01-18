@@ -17,7 +17,7 @@ namespace SynthTree
 		readonly MainWindow window;
 		public bool IsChecked { get { return check.IsChecked.GetValueOrDefault(false); } }
 
-		ItemPool.ItemSet Item { get { return window.Manager[Index]; } }
+		Individual Item { get { return window.Manager[Index]; } }
 
 		public SoundItemControl(int index, MainWindow window)
 		{

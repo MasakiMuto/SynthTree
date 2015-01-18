@@ -49,6 +49,7 @@ namespace SynthTree
 			recorder = new AudioLib.Recorder();
 			analyzer = new AnalyzeWindow();
 			analyzer.Show();
+			new AutoGAWindow().Show();
 		}
 
 		void GenerateClick(object sender, RoutedEventArgs e)
@@ -56,7 +57,7 @@ namespace SynthTree
 			tree = DevelopManager.CreateInitialTree();
 			//tree = Tree.RootNode.Deserialize("test.txt");
 			//Util.Visualizer.ShowTree(tree);
-			new ItemPool.ItemSet(tree).Play();
+			new Individual(tree).Play();
 		}
 
 

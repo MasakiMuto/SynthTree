@@ -8,74 +8,19 @@ namespace SynthTree
 {
 	public class ItemPool
 	{
-		public class ItemSet
-		{
-			public readonly Tree.RootNode Tree;
-			public readonly Unit.Renderer Topology;
-			public readonly string Sound;
-			public readonly AudioLib.Analyzer Analyzer;
-			public readonly float[] Data;
-
-			public ItemSet(Tree.RootNode tree)
-			{
-				Tree = tree;
-				Topology = DevelopManager.DevelopTopology(tree);
-				Sound = System.IO.Path.GetTempFileName();
-				Data = Enumerable.Range(0, DevelopManager.TableLength).Select(x => (float)Topology.RequireValue(x)).ToArray();
-				Normalize();
-				Analyzer = new AudioLib.Analyzer(Data, (int)FileUtil.SampleRate);
-				Analyzer.CalcSpectrogram();
-				using (var f = new FileUtil(Sound))
-				{
-					f.Write(Data);
-				}
-			}
-
-			void Normalize()
-			{
-				float absMax = Data.Select(x => Math.Abs(x)).Max();
-				for (int i = 0; i < Data.Length; i++)
-				{
-					Data[i] /= absMax;
-				}
-			}
-
-			public double CompareTo(ItemSet another)
-			{
-				double s = 0;
-				for (int i = 0; i < Analyzer.Spectrogram.GetLength(0); i++)
-				{
-					for (int j = 0; j < Analyzer.Spectrogram.GetLength(1); j++)
-					{
-						s += Math.Pow(Analyzer.Spectrogram[i, j] - another.Analyzer.Spectrogram[i, j], 2);
-					}
-				}
-				s /= Analyzer.Spectrogram.GetLength(0);//frame length
-				return s;
-			}
-
-			public void Play()
-			{
-				using (var audio = new System.Media.SoundPlayer(Sound))
-				{
-					audio.Play();
-				}
-			}
-
-		}
-
+	
 		public static ItemPool Instance { get; private set; }
-		ItemSet[] items;
+		Individual[] items;
 		Random rand;
 		public int Generation { get; private set; }
 
-		public ItemSet this[int i]{get{return items[i];}}
+		public Individual this[int i]{get{return items[i];}}
 
 		public ItemPool(int count)
 		{
 			Instance = this;
 			rand = new Random();
-			items = new ItemSet[count];
+			items = new Individual[count];
 		}
 
 		/// <summary>
@@ -84,7 +29,7 @@ namespace SynthTree
 		/// <param name="p"></param>
 		public void Init(Tree.RootNode p, int index)
 		{
-			items[index] = new ItemSet(p);
+			items[index] = new Individual(p);
 			for (int i = 0; i < items.Length; i++)
 			{
 				if (index == i)
@@ -93,7 +38,7 @@ namespace SynthTree
 				}
 				var t = p.CloneTree();
 				t.Mutate(rand);
-				items[i] = new ItemSet(t);
+				items[i] = new Individual(t);
 				if (!Check(items[index], items[i]))
 				{
 					i--;
@@ -102,7 +47,7 @@ namespace SynthTree
 			}
 		}
 
-		bool Check(ItemSet origin, ItemSet another)
+		bool Check(Individual origin, Individual another)
 		{
 			var s = origin.CompareTo(another);
 			return s > 1;
@@ -122,7 +67,7 @@ namespace SynthTree
 						System.Diagnostics.Debugger.Break();
 					}
 
-					items[i] = new ItemSet(t);
+					items[i] = new Individual(t);
 				}
 			}
 			Generation++;

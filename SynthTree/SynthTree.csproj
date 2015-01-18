@@ -68,6 +68,11 @@
     <Compile Include="AnalyzeWindow.xaml.cs">
       <DependentUpon>AnalyzeWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="AutoGA.cs" />
+    <Compile Include="AutoGAWindow.xaml.cs">
+      <DependentUpon>AutoGAWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Individual.cs" />
     <Compile Include="RecordWindow.xaml.cs">
       <DependentUpon>RecordWindow.xaml</DependentUpon>
     </Compile>
@@ -97,6 +102,10 @@
     <Compile Include="Util\KeyValueSet.cs" />
     <Compile Include="Util\TreeVisualizer.cs" />
     <Page Include="AnalyzeWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="AutoGAWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
