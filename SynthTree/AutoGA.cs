@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -26,12 +27,12 @@ namespace SynthTree
 	{
 		Analyzer target;
 		Individual[] items;
-		double[] scores;
+		public double[] Scores { get; private set; }
 		double[] prob;
 
 		readonly int PoolSize = 50;
 		readonly int Elite = 3;
-		readonly double Mutation = 0.4;
+		readonly double Mutation = 0.6;
 
 		public int Generation { get; private set; }
 
@@ -45,6 +46,8 @@ namespace SynthTree
 
 		public Action OnUpdate;
 
+		double mutationRate;
+
 		public AutoGA(string targetFile, int poolSize)
 		{
 			rand = new Random();
@@ -55,7 +58,7 @@ namespace SynthTree
 
 			items = new Individual[poolSize];
 			
-			scores = new double[poolSize];
+			Scores = new double[poolSize];
 			prob = new double[poolSize];
 		}
 
@@ -67,6 +70,7 @@ namespace SynthTree
 			}
 			Generation = 0;
 			FailCount = 0;
+			BestScore = double.PositiveInfinity;
 		}
 
 		public void Run(int maxGeneration)
@@ -90,18 +94,20 @@ namespace SynthTree
 		void Update()
 		{
 			Generation++;
-			Parallel.For(0, PoolSize, i => scores[i] = Eval(items[i]));
-			var elite = scores.Select((x, i) => new { x, i })
+			Parallel.For(0, PoolSize, i => Scores[i] = Eval(items[i]));
+			var elite = Scores.Select((x, i) => new { x, i })
 				.OrderBy(a => a.x)
 				.Take(Elite)
 				.Select(a => a.i).ToArray();
-			var best = scores[elite[0]];
+			var best = Scores[elite[0]];
+			var lastElite = BestScore;
 			BestElite = items[elite[0]];
 			BestScore = best;
-			var s = scores.Sum();
+			mutationRate = (BestScore / lastElite) * Mutation;
+			var s = Scores.Sum();
 			for (int i = 0; i < PoolSize; i++)
 			{
-				prob[i] = best / scores[i];
+				prob[i] = best / Scores[i];
 			}
 
 			Individual[] newItems = new Individual[PoolSize];
@@ -128,7 +134,7 @@ namespace SynthTree
 			{
 				FailCount++;
 			}
-			if (rand.NextDouble() < Mutation)
+			while (rand.NextDouble() < mutationRate)
 			{
 				next.Mutate(rand);
 			}
@@ -153,7 +159,9 @@ namespace SynthTree
 
 		double Eval(Individual item)
 		{
-			return item.CompareTo(target);
+			var val = item.CompareTo(target);
+			Debug.Assert(!double.IsNaN(val));
+			return val;
 		}
 
 	}

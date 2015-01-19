@@ -20,7 +20,7 @@ namespace SynthTree
 	public partial class AutoGAWindow : Window
 	{
 		AutoGA ga;
-		List<double> scoreHistory;
+		List<Tuple<double, double, double>> scoreHistory;
 
 		public AutoGAWindow()
 		{
@@ -36,7 +36,7 @@ namespace SynthTree
 				return;
 			}
 			Cursor = Cursors.Wait;
-			scoreHistory = new List<double>();
+			scoreHistory = new List<Tuple<double, double, double>>();
 			ga = new AutoGA("result.wav", int.Parse(poolSize.Text));
 			ga.OnUpdate = Update;
 			
@@ -69,9 +69,21 @@ namespace SynthTree
 			});
 			var ser = new OxyPlot.Series.LineSeries()
 			{
-				
+				Title = "best"
 			};
-			ser.Points.AddRange(scoreHistory.Select((x, i) => new OxyPlot.DataPoint(i, x)));
+			ser.Points.AddRange(scoreHistory.Select((x, i) => new OxyPlot.DataPoint(i, x.Item1)));
+			model.Series.Add(ser);
+			ser = new OxyPlot.Series.LineSeries()
+			{
+				Title = "average"
+			};
+			ser.Points.AddRange(scoreHistory.Select((x, i) => new OxyPlot.DataPoint(i, x.Item2)));
+			model.Series.Add(ser);
+			ser = new OxyPlot.Series.LineSeries()
+			{
+				Title = "distribution"
+			};
+			ser.Points.AddRange(scoreHistory.Select((x, i) => new OxyPlot.DataPoint(i, x.Item3)));
 			model.Series.Add(ser);
 			plot.Model = model;
 			plot.InvalidatePlot();
@@ -85,8 +97,11 @@ namespace SynthTree
 				generation.Content = ga.Generation;
 				value.Content = ga.BestScore;
 				failCount.Content = ga.FailCount;
-				scoreHistory.Add(ga.BestScore);
+				
 			});
+			var avg = ga.Scores.Average();
+			var dist = Math.Sqrt(ga.Scores.Sum(x => (x - avg) * (x - avg)) / ga.Scores.Length);
+			scoreHistory.Add(Tuple.Create(ga.BestScore, avg, dist));
 		}
 
 		private void Button_Click(object sender, RoutedEventArgs e)
