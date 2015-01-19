@@ -48,11 +48,9 @@ namespace SynthTree
 	public static class TreeGenerator
 	{
 		public static int MaxLevel = 10;
-		static Random random;
 
 		static TreeGenerator()
 		{
-			random = new Random();
 			candidateTypes = Enum.GetValues(typeof(NodeType)).OfType<NodeType>()
 				.Where(x => !x.HasFlag(NodeType.FlagAbstract))
 				.ToArray();
@@ -63,7 +61,7 @@ namespace SynthTree
 		public static TreeBase GetNode(NodeType type, int level)
 		{
 			var cand = GetCandidate(type, level);
-			var r = random.Next(cand.Length);
+			var r = RandomProvider.GetThreadRandom().Next(cand.Length);
 			return CreateNode(cand[r]);
 		}
 
@@ -115,7 +113,7 @@ namespace SynthTree
 				case NodeType.ParallelB:
 					return new Modifier(ModifierType.ParallelB1);
 				case NodeType.Constant:
-					return new Constant(random.NextDouble());
+					return new Constant(RandomProvider.GetThreadRandom().NextDouble());
 				default:
 					throw new ArgumentException();
 			}

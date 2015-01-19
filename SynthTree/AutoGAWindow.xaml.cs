@@ -40,12 +40,16 @@ namespace SynthTree
 
 		void Update()
 		{
-			App.Current.Dispatcher.Invoke(() => generation.Content = ga.Generation);
+			App.Current.Dispatcher.Invoke(() =>
+			{
+				generation.Content = ga.Generation;
+				value.Content = ga.BestScore;
+				failCount.Content = ga.FailCount;
+			});
 		}
 
 		private void Button_Click(object sender, RoutedEventArgs e)
 		{
-			
 			Run();
 		}
 	}

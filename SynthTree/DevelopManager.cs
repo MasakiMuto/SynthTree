@@ -62,13 +62,7 @@ namespace SynthTree
 			//var root = TreeGenerator.Start();
 			var root = new Tree.RootNode();
 			root.DevelopChildren();
-			int i = 0;
-			var list = root.ToBreadthFirstList();
-			foreach (var item in list)
-			{
-				item.Index = i;
-				i++;
-			}
+			root.SetIndex();
 			return root;
 		}
 

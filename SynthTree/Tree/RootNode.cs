@@ -30,6 +30,12 @@ namespace SynthTree.Tree
 			return children[rand.Next(containSelf ? 0 : 1, children.Length)];
 		}
 
+		TreeBase GetRandomChildWithoutConstant(Random rand, bool containSelf)
+		{
+			var ar = ToBreadthFirstList().Where(x => x.NodeType != SynthTree.NodeType.Constant).ToArray();
+			return ar[rand.Next(containSelf ? 0 : 1, ar.Length)];
+		}
+
 		/// <summary>
 		/// 自分自身を突然変異させる
 		/// </summary>
@@ -50,9 +56,8 @@ namespace SynthTree.Tree
 		public bool CrossOver(RootNode another, Random rand)
 		{
 			another = another.CloneTree();
-			var target = GetRandomChild(rand, false);
-			var type = target.NodeType;
-			type = (type & SynthTree.NodeType.Mask);
+			var target = GetRandomChildWithoutConstant(rand, false);
+			var type = target.NodeType & SynthTree.NodeType.Mask;
 			var candidate = another.ToBreadthFirstList()
 				.Where(x => (type & x.NodeType) == type).ToArray();
 			if (!candidate.Any())

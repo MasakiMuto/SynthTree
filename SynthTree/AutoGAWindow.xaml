@@ -5,6 +5,7 @@
     <StackPanel>
         <Label x:Name="generation" Content="generation"/>
         <Label x:Name="value" Content="value" />
+        <Label x:Name="failCount" Content="failCount" />
         <TextBox x:Name="maxGeneration" Text="50"/>
         <TextBox x:Name="poolSize" Text="30" />
         <Button Content="start" Click="Button_Click" />

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -61,7 +62,7 @@ namespace SynthTree
 				if (!index.Contains(i))
 				{
 					var p = GetPair(index.Length);
-					var t = parent[p.Item1];
+					var t = parent[p.Item1].CloneTree();
 					if (!t.CrossOver(parent[p.Item2], rand))
 					{
 						System.Diagnostics.Debugger.Break();
@@ -75,6 +76,7 @@ namespace SynthTree
 
 		Tuple<int, int> GetPair(int length)
 		{
+			Debug.Assert(length >= 2);
 			int p1 = rand.Next(length);
 			int p2;
 			do
