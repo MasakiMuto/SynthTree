@@ -43,8 +43,7 @@ namespace SynthTree.Tree
 		public void Mutate(Random rand)
 		{
 			var target = GetRandomChild(rand, true);
-			target.Children.Clear();
-			target.DevelopChildren();
+			target.MutateSelf(rand);
 			SetIndex();
 		}
 

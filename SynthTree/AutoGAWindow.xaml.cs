@@ -20,6 +20,7 @@ namespace SynthTree
 	public partial class AutoGAWindow : Window
 	{
 		AutoGA ga;
+		List<double> scoreHistory;
 
 		public AutoGAWindow()
 		{
@@ -29,13 +30,52 @@ namespace SynthTree
 
 		async void Run()
 		{
+			
+			if (ga != null && ga.IsRunning)
+			{
+				return;
+			}
+			Cursor = Cursors.Wait;
+			scoreHistory = new List<double>();
 			ga = new AutoGA("result.wav", int.Parse(poolSize.Text));
 			ga.OnUpdate = Update;
 			
 			ga.Init();
 			var gen = int.Parse(maxGeneration.Text);
+			var stopwatch = new System.Diagnostics.Stopwatch();
+			stopwatch.Start();
 			await Task.Run(()=>ga.Run(gen));
+			stopwatch.Stop();
+			time.Content = stopwatch.Elapsed.ToString();
 			ga.BestElite.Tree.Serialize("ga.bin");
+			generation.Content = "complete";
+			ShowScorePlot();
+			Cursor = null;
+		}
+
+		void ShowScorePlot()
+		{
+			var model = new OxyPlot.PlotModel();
+			model.Axes.Add(new OxyPlot.Axes.LogarithmicAxis()
+			{
+				Title = "score",
+				Position = OxyPlot.Axes.AxisPosition.Left,
+				Minimum = 1,
+			});
+			model.Axes.Add(new OxyPlot.Axes.LinearAxis()
+			{
+				Title = "generation",
+				Position = OxyPlot.Axes.AxisPosition.Bottom
+			});
+			var ser = new OxyPlot.Series.LineSeries()
+			{
+				
+			};
+			ser.Points.AddRange(scoreHistory.Select((x, i) => new OxyPlot.DataPoint(i, x)));
+			model.Series.Add(ser);
+			plot.Model = model;
+			plot.InvalidatePlot();
+
 		}
 
 		void Update()
@@ -45,6 +85,7 @@ namespace SynthTree
 				generation.Content = ga.Generation;
 				value.Content = ga.BestScore;
 				failCount.Content = ga.FailCount;
+				scoreHistory.Add(ga.BestScore);
 			});
 		}
 

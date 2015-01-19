@@ -1,7 +1,8 @@
 ﻿<Window x:Class="SynthTree.AutoGAWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="AutoGAWindow" Height="300" Width="300">
+        xmlns:plot="http://oxyplot.org/wpf"
+        Title="AutoGAWindow" Height="600" Width="600">
     <StackPanel>
         <Label x:Name="generation" Content="generation"/>
         <Label x:Name="value" Content="value" />
@@ -9,5 +10,7 @@
         <TextBox x:Name="maxGeneration" Text="50"/>
         <TextBox x:Name="poolSize" Text="30" />
         <Button Content="start" Click="Button_Click" />
+        <Label x:Name="time" Content="time" />
+        <plot:PlotView x:Name="plot" Height="250"/>
     </StackPanel>
 </Window>

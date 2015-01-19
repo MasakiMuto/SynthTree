@@ -126,6 +126,11 @@ namespace SynthTree.Tree
 			next.Level = this.Level + 1;
 		}
 
+		public virtual void MutateSelf(Random rand)
+		{
+			Children.Clear();
+			DevelopChildren();
+		}
 	
 
 	}

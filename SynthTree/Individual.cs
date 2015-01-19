@@ -10,7 +10,7 @@ namespace SynthTree
 	{
 		public readonly Tree.RootNode Tree;
 		public readonly Unit.Renderer Topology;
-		public readonly string Sound;
+		public string Sound { get; private set; }
 		public readonly AudioLib.Analyzer Analyzer;
 		public readonly float[] Data;
 
@@ -18,11 +18,16 @@ namespace SynthTree
 		{
 			Tree = tree;
 			Topology = DevelopManager.DevelopTopology(tree);
-			Sound = System.IO.Path.GetTempFileName();
 			Data = Enumerable.Range(0, DevelopManager.TableLength).Select(x => (float)Topology.RequireValue(x)).ToArray();
 			Normalize();
 			Analyzer = new AudioLib.Analyzer(Data, (int)FileUtil.SampleRate);
 			Analyzer.CalcSpectrogram();
+			
+		}
+
+		public void SaveSound()
+		{
+			Sound = System.IO.Path.GetTempFileName();
 			using (var f = new FileUtil(Sound))
 			{
 				f.Write(Data);
@@ -59,6 +64,10 @@ namespace SynthTree
 
 		public void Play()
 		{
+			if (Sound == null)
+			{
+				SaveSound();
+			}
 			using (var audio = new System.Media.SoundPlayer(Sound))
 			{
 				audio.Play();

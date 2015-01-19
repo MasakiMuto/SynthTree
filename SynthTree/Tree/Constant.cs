@@ -37,5 +37,11 @@ namespace SynthTree.Tree
 		{
 			return new Constant(Value);
 		}
+
+		public override void MutateSelf(Random rand)
+		{
+			base.MutateSelf(rand);
+			Value = rand.NextDouble();
+		}
 	}
 }

@@ -41,6 +41,8 @@ namespace SynthTree
 		public double BestScore { get; private set; }
 		public int FailCount { get; private set; }
 
+		public bool IsRunning { get; private set; }
+
 		public Action OnUpdate;
 
 		public AutoGA(string targetFile, int poolSize)
@@ -69,6 +71,11 @@ namespace SynthTree
 
 		public void Run(int maxGeneration)
 		{
+			if (IsRunning)
+			{
+				return;
+			}
+			IsRunning = true;
 			while (Generation < maxGeneration)
 			{
 				Update();
@@ -77,6 +84,7 @@ namespace SynthTree
 					OnUpdate();
 				}
 			}
+			IsRunning = false;
 		}
 
 		void Update()

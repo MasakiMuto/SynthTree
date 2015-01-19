@@ -79,6 +79,7 @@ namespace SynthTree
 		public void Save(int index)
 		{
 			if (!Ready) return;
+			pool[index].SaveSound();
 			System.IO.File.Copy(pool[index].Sound, "result.wav", true);
 			pool[index].Tree.Serialize("test.txt");
 		}
