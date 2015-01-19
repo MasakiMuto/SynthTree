@@ -50,7 +50,7 @@ namespace SynthTree.Unit
 
 		static ConstantOscillator()
 		{
-			var rand = new Random();
+			var rand = new Random(0);
 			NoiseBuffer = Enumerable.Range(0, 64).Select(x => rand.NextDouble() * 2 - 1).ToArray();
 		}
 

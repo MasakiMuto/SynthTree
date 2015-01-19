@@ -36,10 +36,24 @@ namespace SynthTree
 
 		void Normalize()
 		{
-			float absMax = Data.Select(x => Math.Abs(x)).Max();
+			float max = 0;
+			float sum = 0;
+			foreach (var item in Data)
+			{
+				if (Math.Abs(item) > max)
+				{
+					max = Math.Abs(item);
+				}
+				sum += item;
+			}
+			if (max == 0)
+			{
+				return;
+			}
+			float avg = sum / Data.Length;
 			for (int i = 0; i < Data.Length; i++)
 			{
-				Data[i] /= absMax;
+				Data[i] = (Data[i] - avg) / max;
 			}
 		}
 
