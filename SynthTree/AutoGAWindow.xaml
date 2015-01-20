@@ -11,6 +11,7 @@
         <TextBox x:Name="poolSize" Text="100" />
         <Button Content="start" Click="Button_Click" />
         <Button Content="End" Click="EndButtonClick" />
+        <Button Content="LoadTree" Click="LoadTreeButtonClick" />
         <Label x:Name="time" Content="time" />
         <plot:PlotView x:Name="plot" Height="250"/>
     </StackPanel>

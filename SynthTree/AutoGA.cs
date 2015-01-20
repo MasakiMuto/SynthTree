@@ -30,9 +30,10 @@ namespace SynthTree
 		public double[] Scores { get; private set; }
 		double[] prob;
 
-		readonly int PoolSize = 50;
+		readonly int PoolSize;
 		readonly int Elite = 3;
-		readonly double Mutation = 0.6;
+		readonly double Mutation = 0.1;
+		readonly double MaxMutation = 0.5;
 
 		public int Generation { get; private set; }
 
@@ -47,12 +48,15 @@ namespace SynthTree
 		public Action OnUpdate;
 
 		double mutationRate;
+		int continueCount;
+
+		public Tree.RootNode Initial { get; set; }
 
 		public AutoGA(string targetFile, int poolSize)
 		{
 			rand = new Random();
 			this.PoolSize = poolSize;
-
+			Elite = 1;
 			target = new Analyzer(targetFile);
 			target.Normalize();
 			target.CalcSpectrogram();
@@ -69,8 +73,13 @@ namespace SynthTree
 			{
 				items[i] = new Individual(DevelopManager.CreateInitialTree());
 			}
+			if (Initial != null)
+			{
+				items[0] = new Individual(Initial);
+			}
 			Generation = 0;
 			FailCount = 0;
+			continueCount = 0;
 			BestScore = double.PositiveInfinity;
 		}
 
@@ -104,12 +113,21 @@ namespace SynthTree
 			var lastElite = BestScore;
 			BestElite = items[elite[0]];
 			BestScore = best;
-			mutationRate = (BestScore / lastElite) * Mutation;
-			var s = Scores.Sum();
-			for (int i = 0; i < PoolSize; i++)
+			if (lastElite == BestScore)
 			{
-				prob[i] = best / Scores[i];
+				continueCount++;
+				continueCount = Math.Min(continueCount, 5);
+				mutationRate = Mutation + (MaxMutation - Mutation) * continueCount / 5.0;
 			}
+			else
+			{
+				continueCount = 0;
+				mutationRate = Mutation;
+			}
+			
+			mutationRate = (BestScore / lastElite) * Mutation;
+			
+			CreateSelectionTable();
 
 			Individual[] newItems = new Individual[PoolSize];
 			for (int i = 0; i < elite.Length; i++)
@@ -120,6 +138,19 @@ namespace SynthTree
 				.Select(x => CreateChildTree()).ToArray();
 			Parallel.For(elite.Length, PoolSize, i => newItems[i] = new Individual(newTrees[i]));
 			items = newItems;
+		}
+
+		void CreateSelectionTable()
+		{
+			var order = Scores.Select((x, i) => new { x, i })
+				.OrderBy(a => a.x)
+				.Select(a => a.i);
+			int rank = 1;
+			foreach (var item in order)
+			{
+				prob[item] = Math.Pow(0.6, rank);
+				rank++;
+			}
 		}
 
 		Tree.RootNode CreateChildTree()

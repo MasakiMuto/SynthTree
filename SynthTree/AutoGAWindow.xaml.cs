@@ -22,6 +22,8 @@ namespace SynthTree
 		AutoGA ga;
 		List<Tuple<double, double, double>> scoreHistory;
 
+		Tree.RootNode initialTree;
+
 		public AutoGAWindow()
 		{
 			InitializeComponent();
@@ -40,7 +42,7 @@ namespace SynthTree
 			scoreHistory = new List<Tuple<double, double, double>>();
 			ga = new AutoGA("result.wav", int.Parse(poolSize.Text));
 			ga.OnUpdate = Update;
-			
+			ga.Initial = initialTree;
 			ga.Init();
 			var gen = int.Parse(maxGeneration.Text);
 			var stopwatch = new System.Diagnostics.Stopwatch();
@@ -57,11 +59,10 @@ namespace SynthTree
 		void ShowScorePlot()
 		{
 			var model = new OxyPlot.PlotModel();
-			model.Axes.Add(new OxyPlot.Axes.LogarithmicAxis()
+			model.Axes.Add(new OxyPlot.Axes.LinearAxis()
 			{
 				Title = "score",
 				Position = OxyPlot.Axes.AxisPosition.Left,
-				Minimum = 1,
 			});
 			model.Axes.Add(new OxyPlot.Axes.LinearAxis()
 			{
@@ -74,18 +75,18 @@ namespace SynthTree
 			};
 			ser.Points.AddRange(scoreHistory.Select((x, i) => new OxyPlot.DataPoint(i, x.Item1)));
 			model.Series.Add(ser);
-			ser = new OxyPlot.Series.LineSeries()
-			{
-				Title = "average"
-			};
-			ser.Points.AddRange(scoreHistory.Select((x, i) => new OxyPlot.DataPoint(i, x.Item2)));
-			model.Series.Add(ser);
-			ser = new OxyPlot.Series.LineSeries()
-			{
-				Title = "distribution"
-			};
-			ser.Points.AddRange(scoreHistory.Select((x, i) => new OxyPlot.DataPoint(i, x.Item3)));
-			model.Series.Add(ser);
+			//ser = new OxyPlot.Series.LineSeries()
+			//{
+			//	Title = "average"
+			//};
+			//ser.Points.AddRange(scoreHistory.Select((x, i) => new OxyPlot.DataPoint(i, x.Item2)));
+			//model.Series.Add(ser);
+			//ser = new OxyPlot.Series.LineSeries()
+			//{
+			//	Title = "distribution"
+			//};
+			//ser.Points.AddRange(scoreHistory.Select((x, i) => new OxyPlot.DataPoint(i, x.Item3)));
+			//model.Series.Add(ser);
 			plot.Model = model;
 			plot.InvalidatePlot();
 
@@ -113,6 +114,19 @@ namespace SynthTree
 		private void EndButtonClick(object sender, RoutedEventArgs e)
 		{
 
+		}
+
+		private void LoadTreeButtonClick(object sender, RoutedEventArgs e)
+		{
+			var dialog = new Microsoft.Win32.OpenFileDialog()
+			{
+				Filter = "tree binary | *.bin"
+			
+			};
+			if (dialog.ShowDialog() ?? false)
+			{
+				initialTree = Tree.RootNode.Deserialize(dialog.FileName);
+			}
 		}
 	}
 }
