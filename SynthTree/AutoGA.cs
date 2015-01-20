@@ -54,6 +54,7 @@ namespace SynthTree
 			this.PoolSize = poolSize;
 
 			target = new Analyzer(targetFile);
+			target.Normalize();
 			target.CalcSpectrogram();
 
 			items = new Individual[poolSize];

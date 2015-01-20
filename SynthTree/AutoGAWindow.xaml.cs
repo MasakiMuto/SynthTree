@@ -28,6 +28,7 @@ namespace SynthTree
 			
 		}
 
+
 		async void Run()
 		{
 			
@@ -107,6 +108,11 @@ namespace SynthTree
 		private void Button_Click(object sender, RoutedEventArgs e)
 		{
 			Run();
+		}
+
+		private void EndButtonClick(object sender, RoutedEventArgs e)
+		{
+
 		}
 	}
 }

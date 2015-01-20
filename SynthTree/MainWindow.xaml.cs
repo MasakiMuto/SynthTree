@@ -25,6 +25,7 @@ namespace SynthTree
 		SoundItemControl[] soundControls;
 
 		Tree.RootNode tree;
+		Individual individual;
 
 		AudioLib.Recorder recorder;
 		AnalyzeWindow analyzer;
@@ -57,7 +58,8 @@ namespace SynthTree
 			tree = DevelopManager.CreateInitialTree();
 			//tree = Tree.RootNode.Deserialize("test.txt");
 			//Util.Visualizer.ShowTree(tree);
-			new Individual(tree).Play();
+			individual = new Individual(tree);
+			individual.Play();
 		}
 
 
@@ -130,8 +132,19 @@ namespace SynthTree
 			if (dialog.ShowDialog() ?? false)
 			{
 				tree = Tree.RootNode.Deserialize(dialog.FileName);
+				individual = new Individual(tree);
 			}
 			
+		}
+
+		private void PreviewButtonClick(object sender, RoutedEventArgs e)
+		{
+			if (individual != null)
+			{
+				individual.Play();
+				Util.Visualizer.ShowTopology(individual.Topology);
+				Util.Visualizer.ShowTree(individual.Tree);
+			}
 		}
 
 

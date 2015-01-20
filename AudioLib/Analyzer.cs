@@ -39,6 +39,18 @@ namespace AudioLib
 			}
 		}
 
+		/// <summary>
+		/// 最大値が1でない外部音声を正規化する
+		/// </summary>
+		public void Normalize()
+		{
+			var max = sound.Select(x => Math.Abs(x)).Max();
+			for (int i = 0; i < sound.Length; i++)
+			{
+				sound[i] /= max;
+			}
+		}
+
 		public Analyzer(float[] data, int sampleRate)
 		{
 			sound = data;

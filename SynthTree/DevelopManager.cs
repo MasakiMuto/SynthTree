@@ -49,6 +49,11 @@ namespace SynthTree
 			SetSource(Enumerable.Repeat(0.11, 4000).ToArray(), Enumerable.Repeat(1.0, 4000).ToArray());
 		}
 
+		/// <summary>
+		/// ナイキスト周波数で正規化した周波数
+		/// </summary>
+		/// <param name="freq"></param>
+		/// <param name="power"></param>
 		public static void SetSource(double[] freq, double[] power)
 		{
 			freqTable = freq;

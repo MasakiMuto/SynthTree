@@ -55,7 +55,7 @@ namespace SynthTree
 			plot2.InvalidatePlot();
 			plot.InvalidatePlot();
 
-			DevelopManager.SetSource(Analyzer.FreqTime, Analyzer.PowerTime);
+			DevelopManager.SetSource(Analyzer.FreqTime.Select(x=> x / (FileUtil.SampleRate / 2)).ToArray(), Analyzer.PowerTime);
 		}
 
 		OxyPlot.PlotModel SetSpector(IEnumerable<OxyPlot.DataPoint> data)
