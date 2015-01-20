@@ -109,19 +109,21 @@ namespace AudioLib
 			CalcInner(ref PowerTime, CalcPower);
 		}
 
-		IEnumerable<float> CreateFrame(int from)
+		IEnumerable<float> CreateFrame(int from, bool window)
 		{
-			return Enumerable.Range(from * NoOverlap - NoOverlap, WindowSize)
+			var w = Window.Hamming(WindowSize);
+			var head = from * NoOverlap - WindowSize / 2;
+			return Enumerable.Range(head, WindowSize)
 				.SkipWhile(x => x < 0)
 				.TakeWhile(x => x < ActualDataLength)
-				.Select(x => sound[x]);
+				.Select(x => sound[x] * (window ? (float) w[x - head] : 1f));
 		}
 
 		double CalcPower(int from)
 		{
 			int c = 0;
 			double s = 0;
-			foreach (var i in CreateFrame(from))
+			foreach (var i in CreateFrame(from, false))
 			{
 				s += i * i; ;
 				c++;
@@ -136,10 +138,8 @@ namespace AudioLib
 			}
 		}
 
-		const int AutoCorrelationLength = 512;
-
 		/// <summary>
-		/// 
+		/// 基本周波数を求める
 		/// </summary>
 		public void CalcPitch()
 		{
@@ -148,26 +148,64 @@ namespace AudioLib
 
 		double CalcPitch(int from)
 		{
-			var f = CreateFrame(from).ToArray();
+			const double K = 0.8;
+			var n = CalcNormalizedSquareDifferenceFunction(CreateFrame(from, false).ToArray());
 
-
-			var r = new double[AutoCorrelationLength];
-			double tmp = double.NegativeInfinity;
-			int max = 0;
-			for (int i = 0; i < AutoCorrelationLength; i++)
+			List<Tuple<double, int>> peaks = new List<Tuple<double, int>>();
+			bool stat = false;
+			double m = -1;
+			int t = -1;
+		
+			for (int i = 1; i < n.Length; i++)
 			{
-				r[i] = Enumerable.Range(0, AutoCorrelationLength - 1)
-					.Select(t => sound[t + from] * sound[i + t + from])
-					.Sum();
-				r[i] /= r[0];
-				if (i > 0 && r[i] > tmp)
+				if (n[i] >= 0 && n[i - 1] < 0)
 				{
-					max = i;
-					tmp = r[i];
+					stat = true;
+				}
+				if (n[i] < 0 && n[i - 1] >= 0 && stat)
+				{
+					stat = false;
+					peaks.Add(Tuple.Create(m, t));
+				}
+				if (stat && n[i] > m)
+				{
+					m = n[i];
+					t = i;
 				}
 			}
-			return SampleRate / (double)max;
-	
+			if (!peaks.Any())
+			{
+				return 0;
+			}
+
+			var thr = peaks.Max(x => x.Item1) * K;
+			int time = peaks.First(x => x.Item1 >= thr).Item2;
+			return SampleRate / time;
+		}
+
+		double[] CalcNormalizedSquareDifferenceFunction(float[] f)
+		{
+			double[] n = new double[f.Length];
+			double m, r;
+			for (int tau = 0; tau < f.Length; tau++)
+			{
+				m = 0;
+				r = 0;
+				for (int j = 0; j < f.Length - tau - 1; j++)
+				{
+					m += f[j] * f[j] + f[j + tau] * f[j + tau];
+					r += f[j] * f[j + tau];
+				}
+				if(m != 0)
+				{ 
+					n[tau] = 2 * r / m;
+				}
+				else
+				{
+					n[tau] = 0;
+				}
+			}
+			return n;
 		}
 
 
