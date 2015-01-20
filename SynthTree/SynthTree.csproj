@@ -73,6 +73,7 @@
       <DependentUpon>AutoGAWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Individual.cs" />
+    <Compile Include="ParameterOptimizer.cs" />
     <Compile Include="RecordWindow.xaml.cs">
       <DependentUpon>RecordWindow.xaml</DependentUpon>
     </Compile>

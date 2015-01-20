@@ -37,7 +37,6 @@ namespace SynthTree
 
 		public int Generation { get; private set; }
 
-		Random rand;
 
 		public Individual BestElite { get; private set; }
 		public double BestScore { get; private set; }
@@ -54,7 +53,6 @@ namespace SynthTree
 
 		public AutoGA(string targetFile, int poolSize)
 		{
-			rand = new Random();
 			this.PoolSize = poolSize;
 			Elite = 1;
 			target = new Analyzer(targetFile);
@@ -134,9 +132,7 @@ namespace SynthTree
 			{
 				newItems[i] = items[elite[i]];
 			}
-			var newTrees = Enumerable.Range(elite.Length, PoolSize)
-				.Select(x => CreateChildTree()).ToArray();
-			Parallel.For(elite.Length, PoolSize, i => newItems[i] = new Individual(newTrees[i]));
+			Parallel.For(elite.Length, PoolSize, i => newItems[i] = new Individual(CreateChildTree()));
 			items = newItems;
 		}
 
@@ -155,6 +151,7 @@ namespace SynthTree
 
 		Tree.RootNode CreateChildTree()
 		{
+			var rand = RandomProvider.GetThreadRandom();
 			int p1, p2;
 			p1 = RandomSelect();
 			do
@@ -170,12 +167,13 @@ namespace SynthTree
 			{
 				next.Mutate(rand);
 			}
+			next = new ParameterOptimizer(next, target).Run();
 			return next;
 		}
 
 		int RandomSelect()
 		{
-			var t = rand.NextDouble() * prob.Sum();
+			var t = RandomProvider.GetThreadRandom().NextDouble() * prob.Sum();
 			var s = 0.0;
 			for (int i = 0; i < PoolSize; i++)
 			{
