@@ -8,12 +8,12 @@ namespace SynthTree
 {
 	public class GAManager
 	{
-		ItemPool pool;
+		public ItemPool Pool { get; private set; }
 		public bool Ready { get; private set; }
 
 		public static Random Random { get; private set; }
 
-		public Individual this[int i] { get { return pool[i]; } }
+		public Individual this[int i] { get { return Pool[i]; } }
 
 		static GAManager()
 		{
@@ -23,34 +23,26 @@ namespace SynthTree
 		public GAManager()
 		{
 			Ready = false;
-			pool = new ItemPool(9);
+			Pool = new ItemPool(9);
 		}
 
 		public void Start(Tree.RootNode tree)
 		{
 			Ready = true;
-			pool.Init(tree);
+			Pool.Init(tree);
 		}
-
-		//public void Start(SynthParam adam)
-		//{
-		//	Ready = true;
-		//	pool.Reset();
-		//	eval.Reset();
-		//	pool.Init(adam, 0);
-		//}
 
 		public void Play(int index)
 		{
 			if (!Ready) return;
-			var param = pool[index];
+			var param = Pool[index];
 			param.Play();
 		}
 
 		public void Visualize(int index)
 		{
 			if (!Ready) return;
-			var param = pool[index];
+			var param = Pool[index];
 			Util.Visualizer.ShowTopology(param.Topology);
 			Util.Visualizer.ShowTree(param.Tree);
 		}
@@ -66,22 +58,21 @@ namespace SynthTree
 			var a = saved.ToArray();
 			if (a.Length == 1)
 			{
-				pool.MutateAll(a[0]);
-				//pool.Init(pool[a[0]], a[0]);
+				Pool.MutateAll(a[0]);
 				return;
 			}
 			else
 			{
-				pool.CrossOver(a);
+				Pool.CrossOver(a);
 			}
 		}
 
 		public void Save(int index)
 		{
 			if (!Ready) return;
-			pool[index].SaveSound();
-			System.IO.File.Copy(pool[index].Sound, "result.wav", true);
-			pool[index].Tree.Serialize("test.txt");
+			Pool[index].SaveSound();
+			System.IO.File.Copy(Pool[index].Sound, "result.wav", true);
+			Pool[index].Tree.Serialize("test.txt");
 		}
 
 

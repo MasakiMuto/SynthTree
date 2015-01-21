@@ -106,8 +106,13 @@ namespace SynthTree
 		private void NextButtonClick(object sender, RoutedEventArgs e)
 		{
 			Cursor = Cursors.Wait;
-			Manager.Update(soundControls.Where(x => x.IsChecked).Select(x=>x.Index));
+			Manager.Update(GetSelectedIndex());
 			Cursor = null;
+		}
+
+		IEnumerable<int> GetSelectedIndex()
+		{
+			return soundControls.Where(x => x.IsChecked).Select(x => x.Index);
 		}
 
 		void RecordButtonClick(object sender, RoutedEventArgs e)
@@ -147,6 +152,36 @@ namespace SynthTree
 				Util.Visualizer.ShowTopology(individual.Topology);
 				Util.Visualizer.ShowTree(individual.Tree);
 			}
+		}
+
+		private void EnterThresholdButtonClick(object sender, RoutedEventArgs e)
+		{
+			if (Manager == null || !Manager.Ready)
+			{
+				return;
+			}
+			int val;
+			if (!int.TryParse(thresholdBox.Text, out val))
+			{
+				val = 100;
+				thresholdBox.Text = val.ToString();
+			}
+			Manager.Pool.Threshold = val;
+		}
+
+		private void CompareButtonClick(object sender, RoutedEventArgs e)
+		{
+			var target = GetSelectedIndex().ToArray();
+			if (target.Length != 2)
+			{
+				return;
+			}
+			if (Manager == null || !Manager.Ready)
+			{
+				return;
+			}
+			var val = Manager[target[0]].CompareTo(Manager[target[1]]);
+			similarityLabel.Content = "score:" + (int)val;
 		}
 
 
