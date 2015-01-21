@@ -67,14 +67,13 @@ namespace SynthTree
 
 		public void Init()
 		{
-			for (int i = 0; i < PoolSize; i++)
-			{
-				items[i] = new Individual(DevelopManager.CreateInitialTree());
-			}
+			var trees = Enumerable.Range(0, Initial == null ? PoolSize : PoolSize - 1).Select(x => DevelopManager.CreateInitialTree()).ToArray();
 			if (Initial != null)
 			{
-				items[0] = new Individual(Initial);
+				items[PoolSize - 1] = new Individual(Initial);
 			}
+			Parallel.For(0, Initial == null ? PoolSize : PoolSize - 1, i => items[i] = new Individual(trees[i]));
+			
 			Generation = 0;
 			FailCount = 0;
 			continueCount = 0;

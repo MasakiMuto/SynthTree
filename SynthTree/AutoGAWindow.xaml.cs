@@ -44,15 +44,14 @@ namespace SynthTree
 			ga = new AutoGA("result.wav", int.Parse(poolSize.Text));
 			ga.OnUpdate = Update;
 			ga.Initial = initialTree;
-			ga.Init();
 			var gen = int.Parse(maxGeneration.Text);
 			stopwatch = new System.Diagnostics.Stopwatch();
 			stopwatch.Start();
+			ga.Init();
 			await Task.Run(()=>ga.Run(gen));
 			stopwatch.Stop();
 			ga.BestElite.Tree.Serialize("ga.bin");
 			generation.Content = "complete";
-			ShowScorePlot();
 			Cursor = null;
 		}
 
