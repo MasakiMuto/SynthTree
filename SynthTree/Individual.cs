@@ -87,5 +87,12 @@ namespace SynthTree
 				audio.Play();
 			}
 		}
+
+		public bool IsValidWaveform()
+		{
+			Analyzer.CalcPitch();
+			return Analyzer.Pitch.Any(x => x != 0);
+		}
+
 	}
 }

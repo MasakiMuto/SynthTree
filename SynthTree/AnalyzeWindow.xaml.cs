@@ -50,12 +50,12 @@ namespace SynthTree
 			this.Cursor = null;
 			//SetSpector(analyzer.Freq.Select((x, i) => new OxyPlot.DataPoint(analyzer.FreqPerIndex * i, x)));
 
-			plot.Model = SetSpectrogram(Analyzer.FreqTime.Select((x, i) => new OxyPlot.DataPoint(i * Analyzer.SecondPerIndex, x)));
+			plot.Model = SetSpectrogram(Analyzer.Pitch.Select((x, i) => new OxyPlot.DataPoint(i * Analyzer.SecondPerIndex, x)));
 			plot2.Model = SetPowergram(Analyzer.PowerTime.Select((x, i) => new OxyPlot.DataPoint(i * Analyzer.SecondPerIndex, x)));
 			plot2.InvalidatePlot();
 			plot.InvalidatePlot();
 
-			DevelopManager.SetSource(Analyzer.FreqTime.Select(x=> x / (FileUtil.SampleRate / 2)).ToArray(), Analyzer.PowerTime);
+			DevelopManager.SetSource(Analyzer.Pitch.Select(x=> x / (FileUtil.SampleRate / 2)).ToArray(), Analyzer.PowerTime);
 		}
 
 		OxyPlot.PlotModel SetSpector(IEnumerable<OxyPlot.DataPoint> data)

@@ -29,7 +29,7 @@ namespace SynthTree
 		public void Start(Tree.RootNode tree)
 		{
 			Ready = true;
-			pool.Init(tree, 0);
+			pool.Init(tree);
 		}
 
 		//public void Start(SynthParam adam)
@@ -66,7 +66,7 @@ namespace SynthTree
 			var a = saved.ToArray();
 			if (a.Length == 1)
 			{
-				pool.Init(pool[a[0]].Tree, a[0]);
+				pool.MutateAll(a[0]);
 				//pool.Init(pool[a[0]], a[0]);
 				return;
 			}

@@ -21,7 +21,7 @@ namespace AudioLib
 		public double SecondPerIndex { get { return 1.0 / (SampleRate / FreqPerSample); } }
 		readonly int FreqPerSample = 10;//何サンプルごとにスペクトルを計算するか
 		public double[,] Spectrogram;
-		public double[] FreqTime;//時間ごと最大成分周波数
+		public double[] Pitch;//時間ごと最大成分周波数
 		public double[] PowerTime;//時間ごとボリューム(デシベル)
 		readonly long ActualDataLength;
 
@@ -155,7 +155,11 @@ namespace AudioLib
 		/// </summary>
 		public void CalcPitch()
 		{
-			CalcInner(ref FreqTime, CalcPitch);
+			if (Pitch != null)
+			{
+				return;
+			}
+			CalcInner(ref Pitch, CalcPitch);
 		}
 
 		double CalcPitch(int from)

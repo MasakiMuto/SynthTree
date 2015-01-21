@@ -17,61 +17,76 @@ namespace SynthTree
 
 		public Individual this[int i]{get{return items[i];}}
 
+		public double Threshold { get; set; }
+
 		public ItemPool(int count)
 		{
 			Instance = this;
 			rand = new Random();
 			items = new Individual[count];
+			Threshold = 100;
 		}
 
 		/// <summary>
 		/// 1個体をオリジナルに変異体で構成する
 		/// </summary>
 		/// <param name="p"></param>
-		public void Init(Tree.RootNode p, int index)
+		public void Init(Tree.RootNode p)
 		{
-			items[index] = new Individual(p);
-			for (int i = 0; i < items.Length; i++)
+			items[0] = new Individual(p);
+			UpdateInner(() => p.CloneTree().Mutate(rand), new[] { 0 });
+		}
+
+		public void MutateAll(int index)
+		{
+			UpdateInner(() => items[index].Tree.CloneTree().Mutate(rand), new[] { index });
+		}
+
+		void UpdateInner(Func<Tree.RootNode> childCreater, IEnumerable<int> excludeItems)
+		{
+			var targets = Enumerable.Range(0, items.Length).Except(excludeItems).ToArray();
+			List<Individual> done = new List<Individual>(excludeItems.Select(x => items[x]));
+			Individual ind;
+			foreach (var j in targets)
 			{
-				if (index == i)
+				do
 				{
-					continue;
-				}
-				var t = p.CloneTree();
-				t.Mutate(rand);
-				items[i] = new Individual(t);
-				if (!Check(items[index], items[i]))
-				{
-					i--;
-					continue;
-				}
+					ind = new Individual(childCreater());
+					if (!ind.IsValidWaveform())
+					{
+						continue;
+					}
+					if (done.Any(x => !Compare(x, ind)))
+					{
+						continue;
+					}
+					break;
+				} while (true);
+				items[j] = ind;
+				done.Add(ind);
 			}
 		}
 
-		bool Check(Individual origin, Individual another)
+		/// <summary>
+		/// 十分違いがあればtrue
+		/// </summary>
+		/// <param name="origin"></param>
+		/// <param name="another"></param>
+		/// <returns></returns>
+		bool Compare(Individual origin, Individual another)
 		{
 			var s = origin.CompareTo(another);
-			return s > 1;
+			return s > Threshold;
 		}
 
 		public void CrossOver(int[] index)
 		{
-			var parent = items.Where((x, i) => index.Contains(i)).Select(x=>x.Tree).ToArray();
-			for (int i = 0; i < items.Length; i++)
-			{
-				if (!index.Contains(i))
-				{
-					var p = GetPair(index.Length);
-					var t = parent[p.Item1].CloneTree();
-					if (!t.CrossOver(parent[p.Item2], rand))
-					{
-						System.Diagnostics.Debugger.Break();
-					}
-
-					items[i] = new Individual(t);
-				}
-			}
-			Generation++;
+			UpdateInner(() => {
+				var p = GetPair(index.Length);
+				var t = items[index[p.Item1]].Tree.CloneTree();
+				t.CrossOver(items[index[p.Item2]].Tree, rand);
+				return t;
+			}, index);
 		}
 
 		Tuple<int, int> GetPair(int length)

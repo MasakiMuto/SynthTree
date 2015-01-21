@@ -55,10 +55,12 @@ namespace SynthTree
 
 		void GenerateClick(object sender, RoutedEventArgs e)
 		{
-			tree = DevelopManager.CreateInitialTree();
-			//tree = Tree.RootNode.Deserialize("test.txt");
-			//Util.Visualizer.ShowTree(tree);
-			individual = new Individual(tree);
+			do
+			{
+				tree = DevelopManager.CreateInitialTree();
+				individual = new Individual(tree);
+			} while (!individual.IsValidWaveform());
+			
 			individual.Play();
 		}
 

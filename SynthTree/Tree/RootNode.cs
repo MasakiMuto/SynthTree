@@ -40,11 +40,12 @@ namespace SynthTree.Tree
 		/// 自分自身を突然変異させる
 		/// </summary>
 		/// <param name="rand"></param>
-		public void Mutate(Random rand)
+		public RootNode Mutate(Random rand)
 		{
 			var target = GetRandomChild(rand, true);
 			target.MutateSelf(rand);
 			SetIndex();
+			return this;
 		}
 
 		/// <summary>
