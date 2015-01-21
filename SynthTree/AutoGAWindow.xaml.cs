@@ -27,9 +27,9 @@ namespace SynthTree
 		public AutoGAWindow()
 		{
 			InitializeComponent();
-			
 		}
 
+		System.Diagnostics.Stopwatch stopwatch;
 
 		async void Run()
 		{
@@ -40,21 +40,23 @@ namespace SynthTree
 			}
 			Cursor = Cursors.Wait;
 			scoreHistory = new List<Tuple<double, double, double>>();
+			ShowScorePlot();
 			ga = new AutoGA("result.wav", int.Parse(poolSize.Text));
 			ga.OnUpdate = Update;
 			ga.Initial = initialTree;
 			ga.Init();
 			var gen = int.Parse(maxGeneration.Text);
-			var stopwatch = new System.Diagnostics.Stopwatch();
+			stopwatch = new System.Diagnostics.Stopwatch();
 			stopwatch.Start();
 			await Task.Run(()=>ga.Run(gen));
 			stopwatch.Stop();
-			time.Content = stopwatch.Elapsed.ToString();
 			ga.BestElite.Tree.Serialize("ga.bin");
 			generation.Content = "complete";
 			ShowScorePlot();
 			Cursor = null;
 		}
+
+		OxyPlot.Series.LineSeries series;
 
 		void ShowScorePlot()
 		{
@@ -67,14 +69,15 @@ namespace SynthTree
 			model.Axes.Add(new OxyPlot.Axes.LinearAxis()
 			{
 				Title = "generation",
-				Position = OxyPlot.Axes.AxisPosition.Bottom
+				Position = OxyPlot.Axes.AxisPosition.Bottom,
+				Maximum = int.Parse(maxGeneration.Text)
 			});
-			var ser = new OxyPlot.Series.LineSeries()
+			series = new OxyPlot.Series.LineSeries()
 			{
 				Title = "best"
 			};
-			ser.Points.AddRange(scoreHistory.Select((x, i) => new OxyPlot.DataPoint(i, x.Item1)));
-			model.Series.Add(ser);
+			
+			model.Series.Add(series);
 			//ser = new OxyPlot.Series.LineSeries()
 			//{
 			//	Title = "average"
@@ -92,18 +95,26 @@ namespace SynthTree
 
 		}
 
+		void UpdatePlot()
+		{
+			series.Points.Clear();
+			series.Points.AddRange(scoreHistory.Select((x, i) => new OxyPlot.DataPoint(i, x.Item1)));
+			plot.InvalidatePlot();
+		}
+
 		void Update()
 		{
+			var avg = ga.Scores.Average();
+			var dist = Math.Sqrt(ga.Scores.Sum(x => (x - avg) * (x - avg)) / ga.Scores.Length);
+			scoreHistory.Add(Tuple.Create(ga.BestScore, avg, dist));
 			App.Current.Dispatcher.Invoke(() =>
 			{
 				generation.Content = ga.Generation;
 				value.Content = ga.BestScore;
 				failCount.Content = ga.FailCount;
-				
+				time.Content = stopwatch.Elapsed.ToString();
+				UpdatePlot();
 			});
-			var avg = ga.Scores.Average();
-			var dist = Math.Sqrt(ga.Scores.Sum(x => (x - avg) * (x - avg)) / ga.Scores.Length);
-			scoreHistory.Add(Tuple.Create(ga.BestScore, avg, dist));
 		}
 
 		private void Button_Click(object sender, RoutedEventArgs e)
