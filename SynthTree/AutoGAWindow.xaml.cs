@@ -42,7 +42,7 @@ namespace SynthTree
 			Cursor = Cursors.Wait;
 			scoreHistory = new List<Tuple<double, double, double>>();
 			ShowScorePlot();
-			ga = new AutoGA("result.wav", int.Parse(poolSize.Text));
+			ga = new AutoGA(targetFile, int.Parse(poolSize.Text));
 			canceller = new System.Threading.CancellationTokenSource();
 			
 			ga.Cancell = canceller.Token;
@@ -55,7 +55,7 @@ namespace SynthTree
 			stopwatch.Stop();
 			canceller.Dispose();
 			canceller = null;
-			ga.BestElite.Tree.Serialize("ga.bin");
+			ga.BestElite.Tree.Serialize(System.IO.Path.GetFileNameWithoutExtension(targetFile) + ".bin");
 			generation.Content = "complete";
 			Cursor = null;
 		}
@@ -144,6 +144,19 @@ namespace SynthTree
 			if (dialog.ShowDialog() ?? false)
 			{
 				initialTree = Tree.RootNode.Deserialize(dialog.FileName);
+			}
+		}
+
+		string targetFile = "result.wav";
+
+		private void SelectTargetButtonClick(object sender, RoutedEventArgs e)
+		{
+			var dialog = new Microsoft.Win32.OpenFileDialog(){
+				Filter = "wave file | *.wav",
+			};
+			if (dialog.ShowDialog() ?? false)
+			{
+				targetFile = dialog.FileName;
 			}
 		}
 	}
