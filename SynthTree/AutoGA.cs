@@ -51,6 +51,8 @@ namespace SynthTree
 
 		public Tree.RootNode Initial { get; set; }
 
+		public System.Threading.CancellationToken Cancell;
+
 		public AutoGA(string targetFile, int poolSize)
 		{
 			this.PoolSize = poolSize;
@@ -87,7 +89,7 @@ namespace SynthTree
 				return;
 			}
 			IsRunning = true;
-			while (Generation < maxGeneration)
+			while (Generation < maxGeneration && (Cancell == null || !Cancell.IsCancellationRequested))
 			{
 				Update();
 				if (OnUpdate != null)

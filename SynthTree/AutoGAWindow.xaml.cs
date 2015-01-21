@@ -30,6 +30,7 @@ namespace SynthTree
 		}
 
 		System.Diagnostics.Stopwatch stopwatch;
+		System.Threading.CancellationTokenSource canceller;
 
 		async void Run()
 		{
@@ -42,14 +43,18 @@ namespace SynthTree
 			scoreHistory = new List<Tuple<double, double, double>>();
 			ShowScorePlot();
 			ga = new AutoGA("result.wav", int.Parse(poolSize.Text));
+			canceller = new System.Threading.CancellationTokenSource();
+			
+			ga.Cancell = canceller.Token;
 			ga.OnUpdate = Update;
 			ga.Initial = initialTree;
 			var gen = int.Parse(maxGeneration.Text);
 			stopwatch = new System.Diagnostics.Stopwatch();
 			stopwatch.Start();
-			ga.Init();
-			await Task.Run(()=>ga.Run(gen));
+			await Task.Run(() => { ga.Init(); ga.Run(gen); }, canceller.Token);
 			stopwatch.Stop();
+			canceller.Dispose();
+			canceller = null;
 			ga.BestElite.Tree.Serialize("ga.bin");
 			generation.Content = "complete";
 			Cursor = null;
@@ -123,7 +128,10 @@ namespace SynthTree
 
 		private void EndButtonClick(object sender, RoutedEventArgs e)
 		{
-
+			if (canceller != null)
+			{
+				canceller.Cancel();
+			}
 		}
 
 		private void LoadTreeButtonClick(object sender, RoutedEventArgs e)
