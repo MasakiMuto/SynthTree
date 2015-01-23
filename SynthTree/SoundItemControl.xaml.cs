@@ -26,9 +26,9 @@ namespace SynthTree
 			InitializeComponent();
 		}
 
-		async void PlayClick(object sender, RoutedEventArgs e)
+		void PlayClick(object sender, RoutedEventArgs e)
 		{
-			await Play();
+			Play();
 		}
 
 		void VisualClick(object sneder, RoutedEventArgs e)
@@ -47,16 +47,15 @@ namespace SynthTree
 			}
 		}
 
-		public async Task Play()
+		public void Play()
 		{
 			if (Item == null)
 			{
 				return;
 			}
-			Activate();
+			Dispatcher.Invoke(Activate);
 			Item.Play();
-			await Task.Delay(500);
-			Deactivate();
+			Dispatcher.Invoke(Deactivate);
 		}
 
 		public void Activate()
@@ -68,6 +67,7 @@ namespace SynthTree
 		public void Deactivate()
 		{
 			Background = Brushes.Transparent;
+			InvalidateVisual();
 		}
 	}
 }

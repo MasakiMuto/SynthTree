@@ -157,6 +157,7 @@ namespace SynthTree
 			if (dialog.ShowDialog() ?? false)
 			{
 				targetFile = dialog.FileName;
+				AnalyzeWindow.Window.OpenFile(dialog.FileName);
 			}
 		}
 	}

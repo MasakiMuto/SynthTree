@@ -19,9 +19,12 @@ namespace SynthTree
 	/// </summary>
 	public partial class AnalyzeWindow : Window
 	{
+		public static AnalyzeWindow Window { get; private set; }
+
 		public AnalyzeWindow()
 		{
 			InitializeComponent();
+			Window = this;
 		}
 
 		private void Button_Click(object sender, RoutedEventArgs e)
@@ -39,7 +42,7 @@ namespace SynthTree
 
 		public AudioLib.Analyzer Analyzer { get; private set; }
 
-		async void OpenFile(string fn)
+		public async void OpenFile(string fn)
 		{
 			this.Cursor = Cursors.Wait;
 			Analyzer = new AudioLib.Analyzer(fn);

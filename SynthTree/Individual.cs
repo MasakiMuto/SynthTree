@@ -84,7 +84,7 @@ namespace SynthTree
 			}
 			using (var audio = new System.Media.SoundPlayer(Sound))
 			{
-				audio.Play();
+				audio.PlaySync();
 			}
 		}
 

@@ -69,6 +69,10 @@ namespace SynthTree
 
 		private void StartButtonClick(object sender, RoutedEventArgs e)
 		{
+			if (tree == null)
+			{
+				return;
+			}
 			Cursor = Cursors.Wait;
 			Manager.Start(tree);
 
@@ -94,13 +98,17 @@ namespace SynthTree
 			}
 		}
 
-		private async void PlayAllClick(object sender, RoutedEventArgs e)
+		private void PlayAllClick(object sender, RoutedEventArgs e)
 		{
-			for (int i = 0; i < soundControls.Length; i++)
+			Task.Factory.StartNew(() =>
 			{
-				await soundControls[i].Play();
-				//await Task.Delay(300);
-			}
+				for (int i = 0; i < soundControls.Length; i++)
+				{
+					soundControls[i].Play();
+					
+				}
+			});
+			
 		}
 
 		private void NextButtonClick(object sender, RoutedEventArgs e)
