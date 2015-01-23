@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SynthTree.Unit
 {
-	public class Delay : Unit2In1Out
+	public class Delay : Unit1In1Out
 	{
 		public double Offset, Sweep;
 

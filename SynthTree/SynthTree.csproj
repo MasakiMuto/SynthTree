@@ -97,6 +97,7 @@
     <Compile Include="Unit\Delay.cs" />
     <Compile Include="Unit\Filter.cs" />
     <Compile Include="Unit\Multiplier.cs" />
+    <Compile Include="Unit\Parabola.cs" />
     <Compile Include="Unit\Splitter.cs" />
     <Compile Include="Unit\TableSource.cs" />
     <Compile Include="Unit\WaveSource.cs" />

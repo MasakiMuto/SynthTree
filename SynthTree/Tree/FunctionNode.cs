@@ -17,11 +17,14 @@ namespace SynthTree.Tree
 			{typeof(Unit.ConstantOscillator), NodeType.Oscil},
 			{typeof(Unit.Filter), NodeType.Filter},
 			{typeof(Unit.Delay), NodeType.Delay},
+			{typeof(Unit.Parabola), NodeType.Parabola},
 		};
 
-		static Type[] typeA;
+		static Type[] typeA, typeB;
 
 		Type type;
+
+		static Dictionary<Type, int> childCount;
 
 		static FunctionNode()
 		{
@@ -29,9 +32,20 @@ namespace SynthTree.Tree
 			{
 				typeof(Unit.Adder),
 				typeof(Unit.Multiplier), 
-				typeof(Unit.Filter), 
-				typeof(Unit.Delay)
 			};
+			typeB = new[]
+			{
+				typeof(Unit.Splitter),
+				typeof(Unit.ConstantOscillator),
+			};
+			childCount = new Dictionary<Type, int>()
+			{
+				{typeof(Unit.ConstantOscillator), 3},
+				{typeof(Unit.Filter), 5},
+				{typeof(Unit.Delay), 2},
+				{typeof(Unit.Parabola), 3},
+			};
+			
 		}
 
 		public FunctionNode()
@@ -72,6 +86,14 @@ namespace SynthTree.Tree
 				o.Offset = GetChildConstant(1);
 				o.Sweep = GetChildConstant(2);
 			}
+			else if (obj is Unit.Parabola)
+			{
+				AssertChildren(3);
+				var o = obj as Unit.Parabola;
+				o.A = GetChildConstant(1);
+				o.B = GetChildConstant(2);
+				o.C = GetChildConstant(3);
+			}
 			else
 			{
 				AssertChildren(1);
@@ -101,23 +123,15 @@ namespace SynthTree.Tree
 			{
 				head = SynthTree.NodeType.FlagA;
 			}
-			else
+			else if(typeB.Contains(type))
 			{
 				head = SynthTree.NodeType.FlagB;
 			}
-
-			if (type == typeof(Unit.ConstantOscillator))
+			else
 			{
-				constant = 3;
+				head = SynthTree.NodeType.FlagW;
 			}
-			else if (type == typeof(Unit.Filter))
-			{
-				constant = 5;
-			}
-			else if(type == typeof(Unit.Delay))
-			{
-				constant = 2;
-			}
+			childCount.TryGetValue(type, out constant);
 
 			return Enumerable.Repeat(head, 1).Concat(Enumerable.Repeat(NodeType.Constant, constant))
 				.Select(x => TreeGenerator.GetNode(x, Level))

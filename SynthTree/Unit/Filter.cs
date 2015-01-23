@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SynthTree.Unit
 {
-	class Filter : Unit2In1Out
+	class Filter : Unit1In1Out
 	{
 		public double LpCutoff, LpResonance, LpSweep, HpCutoff, HpSweep;
 

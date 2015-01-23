@@ -33,14 +33,17 @@ namespace SynthTree
 		End			   = 0x071,  //0_0111_0001
 		Add			   = 0x0c0,  //0_1100_0000
 		Mult		   = 0x0c1,  //0_1100_0001
-		Filter         = 0x0c2,  //0_1100_0010
-		Delay          = 0x0c4,  //0_1100_0100
 		Split		   = 0x0a0,  //0_1010_0000
 		Oscil		   = 0x0a1,  //0_1010_0001
+		Filter         = 0x092,  //0_1001_0010
+		Delay          = 0x094,  //0_1001_0100
+		Parabola       = 0x098,  //0_1001_1000
 		SeriesA		   = 0x040,  //0_0100_0000
 		ParallelA	   = 0x041,  //0_0100_0001
 		SeriesB		   = 0x020,  //0_0010_0000
 		ParallelB	   = 0x021,  //0_0010_0001
+		LoopW          = 0x010,  //0_0001_0000
+		UnitW          = 0x011,  //0_0001_0001
 		Constant       = 0x000,  //0_0000_0000
 		Root           = 0x001,  //0_0000_0001
 	}
@@ -82,6 +85,11 @@ namespace SynthTree
 		static TreeBase CreateNode(NodeType type)
 		{
 			Debug.Assert(!type.HasFlag(NodeType.FlagAbstract));
+			ModifierType mt;
+			if (ModifierTable.TryGetValue(type, out mt))
+			{
+				return new Modifier(mt);
+			}
 			switch (type)
 			{
 				case NodeType.NopA:
@@ -104,20 +112,24 @@ namespace SynthTree
 					return new FunctionNode<Splitter>();
 				case NodeType.Oscil:
 					return new FunctionNode<ConstantOscillator>();
-				case NodeType.SeriesA:
-					return new Modifier(ModifierType.SeriesA1);
-				case NodeType.ParallelA:
-					return new Modifier(ModifierType.ParallelA1);
-				case NodeType.SeriesB:
-					return new Modifier(ModifierType.SeriesB1);
-				case NodeType.ParallelB:
-					return new Modifier(ModifierType.ParallelB1);
+				case NodeType.Parabola:
+					return new FunctionNode<Parabola>();
 				case NodeType.Constant:
-					return new Constant(RandomProvider.GetThreadRandom().NextDouble());
+					return new Constant(RandomProvider.GetThreadRandom().NextDouble() * 2.0 - 1.0);
 				default:
 					throw new ArgumentException();
 			}
 		}
+
+		public static readonly Dictionary<NodeType, ModifierType> ModifierTable = new Dictionary<NodeType,ModifierType>
+		{
+			{NodeType.SeriesA, ModifierType.SeriesA1},
+			{NodeType.SeriesB, ModifierType.SeriesB1},
+			{NodeType.ParallelA, ModifierType.ParallelA1},
+			{NodeType.ParallelB, ModifierType.ParallelB1},
+			{NodeType.LoopW, ModifierType.LoopW},
+			{NodeType.UnitW, ModifierType.UnitW},
+		};
 
 	}
 }

@@ -174,9 +174,10 @@ namespace SynthTree.Unit
 		}
 	}
 
-	public class UnitWire : UnitBase
+
+	public abstract class Unit1In1Out : UnitBase
 	{
-		public UnitWire()
+		public Unit1In1Out()
 		{
 			In = new Connection[1];
 			Out = new Connection[1];
@@ -186,6 +187,11 @@ namespace SynthTree.Unit
 		{
 			base.Update();
 			Out[0].Value = In[0].Value;
+		}
+
+		public static Unit1In1Out CreateStub()
+		{
+			return new Delay();
 		}
 	}
 

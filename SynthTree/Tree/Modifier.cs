@@ -13,6 +13,8 @@ namespace SynthTree.Tree
 		ParallelA1,
 		SeriesB1,
 		ParallelB1,
+		LoopW,
+		UnitW,
 	}
 
 	[Serializable]
@@ -24,29 +26,14 @@ namespace SynthTree.Tree
 			: base()
 		{
 			this.type = type;
-			switch (type)
-			{
-				case ModifierType.SeriesA1:
-					NodeType = SynthTree.NodeType.SeriesA;
-					break;
-				case ModifierType.ParallelA1:
-					NodeType = SynthTree.NodeType.ParallelA;
-					break;
-				case ModifierType.SeriesB1:
-					NodeType = SynthTree.NodeType.SeriesB;
-					break;
-				case ModifierType.ParallelB1:
-					NodeType = SynthTree.NodeType.ParallelB;
-					break;
-				default:
-					break;
-			}
+			NodeType = TreeGenerator.ModifierTable.Single(x => x.Value == type).Key;
 		}
 
 		public override void Process()
 		{
 			System.Diagnostics.Debug.Assert((Target is Unit2In1Out && (type == ModifierType.ParallelA1 || type == ModifierType.SeriesA1))
-				|| (Target is Unit1In2Out && (type == ModifierType.ParallelB1 || type == ModifierType.SeriesB1)));
+				|| (Target is Unit1In2Out && (type == ModifierType.ParallelB1 || type == ModifierType.SeriesB1))
+				|| (Target is Unit1In1Out && (type == ModifierType.UnitW || type == ModifierType.LoopW)));
 			InheritTarget();
 			switch (type)
 			{
@@ -61,6 +48,12 @@ namespace SynthTree.Tree
 					break;
 				case ModifierType.ParallelB1:
 					ParallelB1();
+					break;
+				case ModifierType.UnitW:
+					UnitW();
+					break;
+				case ModifierType.LoopW:
+					LoopW();
 					break;
 				default:
 					throw new Exception();
@@ -137,14 +130,28 @@ namespace SynthTree.Tree
 			Children[4].Target = a1;
 		}
 
+		void UnitW()
+		{
+			var w = Unit1In1Out.CreateStub();
+			
+		}
+
+
+		void LoopW()
+		{
+
+		}
+
 		protected override TreeBase[] CreateChildren()
 		{
 			NodeType[] nt;
 			int wc;
 			var ta = NodeType.FlagA | NodeType.FlagType;
 			var tb = NodeType.FlagB | NodeType.FlagType;
+			var tw = NodeType.FlagW | SynthTree.NodeType.FlagType;
 			var fa = Level > MaxLevel ? NodeType.End : NodeType.FlagA;
 			var fb = Level > MaxLevel ? NodeType.End : NodeType.FlagB;
+			var fw = Level > MaxLevel ? NodeType.End : NodeType.FlagW;
 			switch (this.type)
 			{
 				case ModifierType.SeriesA1:
@@ -162,6 +169,14 @@ namespace SynthTree.Tree
 				case ModifierType.ParallelB1:
 					nt = new[] { fb, tb, tb, ta, ta };
 					wc = 6;
+					break;
+				case ModifierType.UnitW:
+					nt = new[] { fw, };
+					wc = 1;
+					break;
+				case ModifierType.LoopW:
+					nt = new[] {fw, ta, tb };
+					wc = 4;
 					break;
 				default:
 					throw new Exception();
