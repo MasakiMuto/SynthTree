@@ -18,6 +18,7 @@ namespace SynthTree.Tree
 			{typeof(Unit.Filter), NodeType.Filter},
 			{typeof(Unit.Delay), NodeType.Delay},
 			{typeof(Unit.Parabola), NodeType.Parabola},
+			{typeof(Unit.Wire), NodeType.Wire},
 		};
 
 		static Type[] typeA, typeB;
@@ -88,7 +89,7 @@ namespace SynthTree.Tree
 			}
 			else if (obj is Unit.Parabola)
 			{
-				AssertChildren(3);
+				AssertChildren(4);
 				var o = obj as Unit.Parabola;
 				o.A = GetChildConstant(1);
 				o.B = GetChildConstant(2);

@@ -6,20 +6,17 @@ using System.Threading.Tasks;
 
 namespace SynthTree.Unit
 {
-	public class Parabola : Unit1In1Out
+	public class Wire : Unit1In1Out
 	{
-		public double A, B, C;
-
 		public override void Update()
 		{
 			base.Update();
-			var x = In[0].Value;
-			Out[0].Value = A * x * x + B * x + C;
+			Out[0].Value = In[0].Value;
 		}
 
 		public override string ToString()
 		{
-			return "Parabola";
+			return "Wire";
 		}
 	}
 }

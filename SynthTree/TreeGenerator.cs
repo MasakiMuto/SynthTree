@@ -38,11 +38,14 @@ namespace SynthTree
 		Filter         = 0x092,  //0_1001_0010
 		Delay          = 0x094,  //0_1001_0100
 		Parabola       = 0x098,  //0_1001_1000
+		Wire           = 0x093,  //0_1001_0011
 		SeriesA		   = 0x040,  //0_0100_0000
 		ParallelA	   = 0x041,  //0_0100_0001
+		UnitA          = 0x044,  //0_0100_0100 
 		SeriesB		   = 0x020,  //0_0010_0000
 		ParallelB	   = 0x021,  //0_0010_0001
-		LoopW          = 0x010,  //0_0001_0000
+		UnitB          = 0x024,  //0_0010_0100
+		//LoopW          = 0x010,  //0_0001_0000
 		UnitW          = 0x011,  //0_0001_0001
 		Constant       = 0x000,  //0_0000_0000
 		Root           = 0x001,  //0_0000_0001
@@ -114,6 +117,8 @@ namespace SynthTree
 					return new FunctionNode<ConstantOscillator>();
 				case NodeType.Parabola:
 					return new FunctionNode<Parabola>();
+				case NodeType.Wire:
+					return new FunctionNode<Wire>();
 				case NodeType.Constant:
 					return new Constant(RandomProvider.GetThreadRandom().NextDouble() * 2.0 - 1.0);
 				default:
@@ -127,7 +132,9 @@ namespace SynthTree
 			{NodeType.SeriesB, ModifierType.SeriesB1},
 			{NodeType.ParallelA, ModifierType.ParallelA1},
 			{NodeType.ParallelB, ModifierType.ParallelB1},
-			{NodeType.LoopW, ModifierType.LoopW},
+			//{NodeType.LoopW, ModifierType.LoopW},
+			{NodeType.UnitA, ModifierType.UnitA},
+			{NodeType.UnitB, ModifierType.UnitB},
 			{NodeType.UnitW, ModifierType.UnitW},
 		};
 

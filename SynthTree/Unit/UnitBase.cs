@@ -72,6 +72,15 @@ namespace SynthTree.Unit
 			Connect(newInput, newInputIndex, old, oldIndex);
 		}
 
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="old"></param>
+		/// <param name="oldIndex">Oldの出力index</param>
+		/// <param name="next"></param>
+		/// <param name="nextIndex"></param>
+		/// <param name="newOutput"></param>
+		/// <param name="newOutputIndex">Old出力を新たにつなぐ先のnewの入力index</param>
 		public static void ReplaceOutput(UnitBase old, int oldIndex, UnitBase next, int nextIndex, UnitBase newOutput, int newOutputIndex)
 		{
 			next.Out[nextIndex] = old.Out[oldIndex];
@@ -101,6 +110,10 @@ namespace SynthTree.Unit
 		protected void Init(int c) 
 		{
 			if (this.InitCount == c + 1)
+			{
+				return;
+			}
+			if (Out.Length > 0 && this.InitCount == Out[0].ToUnit.Count + 1)
 			{
 				return;
 			}
@@ -203,7 +216,7 @@ namespace SynthTree.Unit
 			get { return val; }
 			set
 			{
-				Debug.Assert(Count + 1 == FromUnit.Count);
+				//Debug.Assert(Count + 1 == FromUnit.Count);
 				val = value;
 				Count = FromUnit.Count;
 			}

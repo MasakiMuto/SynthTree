@@ -11,8 +11,10 @@ namespace SynthTree.Tree
 	{
 		SeriesA1,
 		ParallelA1,
+		UnitA,
 		SeriesB1,
 		ParallelB1,
+		UnitB,
 		LoopW,
 		UnitW,
 	}
@@ -31,8 +33,8 @@ namespace SynthTree.Tree
 
 		public override void Process()
 		{
-			System.Diagnostics.Debug.Assert((Target is Unit2In1Out && (type == ModifierType.ParallelA1 || type == ModifierType.SeriesA1))
-				|| (Target is Unit1In2Out && (type == ModifierType.ParallelB1 || type == ModifierType.SeriesB1))
+			System.Diagnostics.Debug.Assert((Target is Unit2In1Out && (type == ModifierType.ParallelA1 || type == ModifierType.SeriesA1 || type == ModifierType.UnitA))
+				|| (Target is Unit1In2Out && (type == ModifierType.ParallelB1 || type == ModifierType.SeriesB1 || type == ModifierType.UnitB))
 				|| (Target is Unit1In1Out && (type == ModifierType.UnitW || type == ModifierType.LoopW)));
 			InheritTarget();
 			switch (type)
@@ -43,11 +45,17 @@ namespace SynthTree.Tree
 				case ModifierType.ParallelA1:
 					ParallelA1();
 					break;
+				case ModifierType.UnitA:
+					UnitA();
+					break;
 				case ModifierType.SeriesB1:
 					SeriesB1();
 					break;
 				case ModifierType.ParallelB1:
 					ParallelB1();
+					break;
+				case ModifierType.UnitB:
+					UnitB();
 					break;
 				case ModifierType.UnitW:
 					UnitW();
@@ -98,6 +106,13 @@ namespace SynthTree.Tree
 			Children[4].Target = b2;
 		}
 
+		void UnitA()
+		{
+			var w = Unit1In1Out.CreateStub();
+			UnitBase.ReplaceInput(Target, 0, w, 0, w, 0);
+			Children[1].Target = w;
+		}
+
 		void SeriesB1()
 		{
 			var a = Unit2In1Out.CreateStub();
@@ -130,16 +145,33 @@ namespace SynthTree.Tree
 			Children[4].Target = a1;
 		}
 
+		void UnitB()
+		{
+			var w = Unit1In1Out.CreateStub();
+			UnitBase.ReplaceOutput(Target, 0, w, 0, w, 0);
+			Children[1].Target = w;
+		}
+
 		void UnitW()
 		{
 			var w = Unit1In1Out.CreateStub();
-			
+			UnitBase.ReplaceOutput(Target, 0, w, 0, w, 0);
+			Children[1].Target = w;
 		}
 
 
 		void LoopW()
 		{
-
+			var a = Unit2In1Out.CreateStub();
+			var b = Unit1In2Out.CreateStub();
+			var w = Unit1In1Out.CreateStub();
+			UnitBase.ReplaceOutput(Target, 0, b, 0, b, 0);
+			UnitBase.ReplaceInput(Target, 0, a, 0, a, 0);
+			UnitBase.Connect(b, 1, w, 0);
+			UnitBase.Connect(w, 0, a, 1);
+			Children[1].Target = a;
+			Children[2].Target = b;
+			Children[3].Target = w;
 		}
 
 		protected override TreeBase[] CreateChildren()
@@ -162,6 +194,10 @@ namespace SynthTree.Tree
 					nt = new[]{ fa, ta, ta, tb, tb};
 					wc = 6;
 					break;
+				case ModifierType.UnitA:
+					nt = new[] { fa, tw };
+					wc = 1;
+					break;
 				case ModifierType.SeriesB1:
 					nt = new []{fb, tb, ta };
 					wc = 3;
@@ -170,12 +206,16 @@ namespace SynthTree.Tree
 					nt = new[] { fb, tb, tb, ta, ta };
 					wc = 6;
 					break;
+				case ModifierType.UnitB:
+					nt = new[] { fb, tw };
+					wc = 1;
+					break;
 				case ModifierType.UnitW:
-					nt = new[] { fw, };
+					nt = new[] { fw, tw, };
 					wc = 1;
 					break;
 				case ModifierType.LoopW:
-					nt = new[] {fw, ta, tb };
+					nt = new[] { fw, ta, tb, tw };
 					wc = 4;
 					break;
 				default:
