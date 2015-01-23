@@ -90,6 +90,11 @@ namespace SynthTree.Unit
 
 		protected void Require(long t)
 		{
+			if (this is StepDelay)
+			{
+				Update();
+				return;
+			}
 			if (this.Count == t + 1)
 			{
 				return;
@@ -113,15 +118,11 @@ namespace SynthTree.Unit
 			{
 				return;
 			}
-			if (Out.Length > 0 && this.InitCount == Out[0].ToUnit.Count + 1)
-			{
-				return;
-			}
+			Init();
 			foreach (var item in In)
 			{
 				item.FromUnit.Init(c);
 			}
-			Init();
 		}
 
 		public virtual void Init()

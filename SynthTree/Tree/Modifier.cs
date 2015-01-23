@@ -165,9 +165,11 @@ namespace SynthTree.Tree
 			var a = Unit2In1Out.CreateStub();
 			var b = Unit1In2Out.CreateStub();
 			var w = Unit1In1Out.CreateStub();
+			var delay = new StepDelay();
 			UnitBase.ReplaceOutput(Target, 0, b, 0, b, 0);
 			UnitBase.ReplaceInput(Target, 0, a, 0, a, 0);
-			UnitBase.Connect(b, 1, w, 0);
+			UnitBase.Connect(b, 1, delay, 0);
+			UnitBase.Connect(delay, 0, w, 0);
 			UnitBase.Connect(w, 0, a, 1);
 			Children[1].Target = a;
 			Children[2].Target = b;

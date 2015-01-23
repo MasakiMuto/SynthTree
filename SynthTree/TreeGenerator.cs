@@ -45,7 +45,7 @@ namespace SynthTree
 		SeriesB		   = 0x020,  //0_0010_0000
 		ParallelB	   = 0x021,  //0_0010_0001
 		UnitB          = 0x024,  //0_0010_0100
-		//LoopW          = 0x010,  //0_0001_0000
+		LoopW = 0x010,  //0_0001_0000
 		UnitW          = 0x011,  //0_0001_0001
 		Constant       = 0x000,  //0_0000_0000
 		Root           = 0x001,  //0_0000_0001
@@ -132,7 +132,7 @@ namespace SynthTree
 			{NodeType.SeriesB, ModifierType.SeriesB1},
 			{NodeType.ParallelA, ModifierType.ParallelA1},
 			{NodeType.ParallelB, ModifierType.ParallelB1},
-			//{NodeType.LoopW, ModifierType.LoopW},
+			{NodeType.LoopW, ModifierType.LoopW},
 			{NodeType.UnitA, ModifierType.UnitA},
 			{NodeType.UnitB, ModifierType.UnitB},
 			{NodeType.UnitW, ModifierType.UnitW},

@@ -99,6 +99,7 @@
     <Compile Include="Unit\Multiplier.cs" />
     <Compile Include="Unit\Parabola.cs" />
     <Compile Include="Unit\Splitter.cs" />
+    <Compile Include="Unit\StepDelay.cs" />
     <Compile Include="Unit\TableSource.cs" />
     <Compile Include="Unit\WaveSource.cs" />
     <Compile Include="Unit\Wire.cs" />
