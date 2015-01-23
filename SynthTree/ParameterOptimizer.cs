@@ -171,7 +171,7 @@ namespace SynthTree
 				if(rand.NextDouble() < MutateProb)
 				{
 					p[i] += (MutateScale * 2 - MutateScale) * rand.NextDouble();
-					p[i] = Math.Min(1.0, Math.Max(0.0, p[i]));
+					p[i] = Tree.Constant.Clamp(p[i]);
 				}
 			}
 			return p;

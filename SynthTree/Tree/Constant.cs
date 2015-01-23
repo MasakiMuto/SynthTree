@@ -9,6 +9,8 @@ namespace SynthTree.Tree
 	[Serializable]
 	public class Constant : TreeBase
 	{
+
+
 		public double Value;
 
 		public Constant(double value)
@@ -42,6 +44,11 @@ namespace SynthTree.Tree
 		{
 			base.MutateSelf(rand);
 			Value = rand.NextDouble();
+		}
+
+		public static double Clamp(double value)
+		{
+			return Math.Max(-1.0, Math.Min(1.0, value));
 		}
 	}
 }

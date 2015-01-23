@@ -20,7 +20,9 @@ namespace SynthTree.Unit
 			lp = 0;
 			ldp = 0;
 			hp = 0;
-
+			LpCutoff = Math.Abs(LpCutoff);
+			LpResonance = Math.Abs(LpResonance);
+			HpCutoff = Math.Abs(HpCutoff);
 			lpCutoff = Math.Pow(LpCutoff, 3) * .1;
 			lpSweep = 1.0 + LpSweep * 0.0001;
 			lpResonance = 5.0 / (1.0 + Math.Pow(LpResonance, 2.0) * 20) * (0.01 + lpCutoff);

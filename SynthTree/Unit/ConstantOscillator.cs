@@ -22,6 +22,7 @@ namespace SynthTree.Unit
 		{
 			set
 			{
+				value = Math.Abs(value);
 				const int Types = 4;
 				if (value < 1.0 / Types)
 				{
