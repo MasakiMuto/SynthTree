@@ -45,6 +45,10 @@ namespace SynthTree
 
 		public Tree.RootNode Run()
 		{
+			if (Dimension == 0)
+			{
+				return VectorToTree(pool[0]);
+			}
 			for (int i = 0; i < GenSize; i++)
 			{
 				generation++;
