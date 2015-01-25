@@ -188,7 +188,17 @@ namespace SynthTree
 				val = 100;
 				thresholdBox.Text = val.ToString();
 			}
-			Manager.Pool.Threshold = val;
+			int max;
+			if (int.TryParse(thresholdMax.Text, out max))
+			{
+				Manager.Pool.ThresholdMax = max;
+			}
+			Manager.Pool.ThresholdMin = val;
+			if (Manager.Pool.ThresholdMax <= Manager.Pool.ThresholdMin)
+			{
+				Manager.Pool.ThresholdMax = double.MaxValue;
+				System.Windows.MessageBox.Show("類似度閾値の最小値が最大値を上回っています");
+			}
 		}
 
 		private void CompareButtonClick(object sender, RoutedEventArgs e)

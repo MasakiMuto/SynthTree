@@ -17,14 +17,16 @@ namespace SynthTree
 
 		public Individual this[int i]{get{return items[i];}}
 
-		public double Threshold { get; set; }
+		public double ThresholdMin { get; set; }
+		public double ThresholdMax { get; set; }
 
 		public ItemPool(int count)
 		{
 			Instance = this;
 			rand = new Random();
 			items = new Individual[count];
-			Threshold = 100;
+			ThresholdMin = 100;
+			ThresholdMax = double.MaxValue;
 		}
 
 		/// <summary>
@@ -47,10 +49,13 @@ namespace SynthTree
 			var targets = Enumerable.Range(0, items.Length).Except(excludeItems).ToArray();
 			List<Individual> done = new List<Individual>(excludeItems.Select(x => items[x]));
 			Individual ind;
+			int i = 0;
 			foreach (var j in targets)
 			{
+				i = 0;
 				do
 				{
+					i++;
 					ind = new Individual(childCreater());
 					if (!ind.IsValidWaveform())
 					{
@@ -61,7 +66,7 @@ namespace SynthTree
 						continue;
 					}
 					break;
-				} while (true);
+				} while (i < 100);
 				items[j] = ind;
 				done.Add(ind);
 			}
@@ -76,7 +81,7 @@ namespace SynthTree
 		bool Compare(Individual origin, Individual another)
 		{
 			var s = origin.CompareTo(another);
-			return s > Threshold;
+			return s > ThresholdMin && s < ThresholdMax;
 		}
 
 		public void CrossOver(int[] index)

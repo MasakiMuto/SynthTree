@@ -31,9 +31,21 @@
         <Button Content="PlayAll" Grid.Column="1" Grid.Row="3" Click="PlayAllClick" />
         <Button Content="Start" Grid.Column="3" Grid.Row="3" Click="StartButtonClick" />
         <Button Content="Generate" Grid.Column="3" Grid.Row="2" Click="GenerateClick" />
-        <Button Content="Compare" Grid.Column="0" Grid.Row="4"  Click="CompareButtonClick"/>
-        <Label Content="Similarity" Grid.Column="1" Grid.Row="4" x:Name="similarityLabel" />
-        <TextBox Text="100" x:Name="thresholdBox" Grid.Row="4" Grid.Column="2" />
-        <Button Content="EnterThreshold" Grid.Row="4" Grid.Column="3"  Click="EnterThresholdButtonClick"/>
+        <StackPanel Orientation="Horizontal" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="4" VerticalAlignment="Center">
+            <StackPanel.Resources>
+                <Style TargetType="Button">
+                    <Setter Property="Padding" Value="3" />
+                    <Setter Property="Margin" Value="10,0" />
+                </Style>
+            </StackPanel.Resources>
+            <Label Content="Similarity" x:Name="similarityLabel" />
+            <Button Content="Compare" Click="CompareButtonClick"/>
+            <Label Content="ThresholdMin" />
+            <TextBox Text="100" x:Name="thresholdBox" Width="40" VerticalAlignment="Center"/>
+            <Label Content="ThresholdMax"/>
+            <TextBox Text="" x:Name="thresholdMax" Width="40" VerticalAlignment="Center" />
+            <Button Content="ApplyThreshold" Click="EnterThresholdButtonClick"/>
+        </StackPanel>
+      
     </Grid>
 </Window>
