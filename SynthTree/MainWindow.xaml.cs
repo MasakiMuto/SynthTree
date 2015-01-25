@@ -77,6 +77,7 @@ namespace SynthTree
 			Manager.Start(tree);
 
 			Cursor = null;
+			PlayAllClick(null, null);
 			//var dev = new DevelopManager();
 			//using(var f =new FileUtil("test1.wav"))
 			//{
@@ -93,8 +94,20 @@ namespace SynthTree
 			var target = soundControls.FirstOrDefault(x => x.IsChecked);
 			if (target != null)
 			{
-				Manager.Save(target.Index);
-				Manager[target.Index].Tree.Serialize("tree.bin");
+				var dialog = new Microsoft.Win32.SaveFileDialog()
+				{
+					DefaultExt = ".wav",
+					Filter = "wave file | *.wav",
+					AddExtension = true
+				};
+				if (dialog.ShowDialog() ?? false)
+				{
+					var ind = Manager[target.Index];
+					ind.SaveSound();
+					System.IO.File.Copy(ind.Sound, dialog.FileName);
+					ind.Tree.Serialize(System.IO.Path.ChangeExtension(dialog.FileName, ".bin"));
+				}
+			
 			}
 		}
 
@@ -116,6 +129,7 @@ namespace SynthTree
 			Cursor = Cursors.Wait;
 			Manager.Update(GetSelectedIndex());
 			Cursor = null;
+			PlayAllClick(null, null);
 		}
 
 		IEnumerable<int> GetSelectedIndex()
