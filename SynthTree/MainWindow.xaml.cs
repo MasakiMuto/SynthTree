@@ -75,7 +75,7 @@ namespace SynthTree
 			}
 			Cursor = Cursors.Wait;
 			Manager.Start(tree);
-
+			UpdateControls();
 			Cursor = null;
 			PlayAllClick(null, null);
 			//var dev = new DevelopManager();
@@ -129,7 +129,13 @@ namespace SynthTree
 			Cursor = Cursors.Wait;
 			Manager.Update(GetSelectedIndex());
 			Cursor = null;
+			UpdateControls();
 			PlayAllClick(null, null);
+		}
+
+		void UpdateControls()
+		{
+			generationLabel.Content = Manager.Pool.Generation;
 		}
 
 		IEnumerable<int> GetSelectedIndex()
@@ -214,6 +220,18 @@ namespace SynthTree
 			}
 			var val = Manager[target[0]].CompareTo(Manager[target[1]]);
 			similarityLabel.Content = "score:" + (int)val;
+		}
+
+		private void Undo(object sender, RoutedEventArgs e)
+		{
+			Manager.Pool.Undo();
+			UpdateControls();
+		}
+
+		private void Redo(object sender, RoutedEventArgs e)
+		{
+			Manager.Pool.Redo();
+			UpdateControls();
 		}
 
 

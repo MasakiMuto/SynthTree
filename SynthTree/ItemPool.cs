@@ -20,6 +20,8 @@ namespace SynthTree
 		public double ThresholdMin { get; set; }
 		public double ThresholdMax { get; set; }
 
+		Stack<Individual[]> history, undoHistory;
+
 		public ItemPool(int count)
 		{
 			Instance = this;
@@ -27,6 +29,31 @@ namespace SynthTree
 			items = new Individual[count];
 			ThresholdMin = 100;
 			ThresholdMax = double.MaxValue;
+			history = new Stack<Individual[]>();
+			undoHistory = new Stack<Individual[]>();
+		}
+
+		public void Undo()
+		{
+			if (history.Count == 0)
+			{
+				return;
+			}
+			Generation--;
+			undoHistory.Push(items.Clone() as Individual[]);
+			items = history.Pop();
+			
+		}
+
+		public void Redo()
+		{
+			if (undoHistory.Count == 0)
+			{
+				return;
+			}
+			Generation++;
+			history.Push(items.Clone() as Individual[]);
+			items = undoHistory.Pop();
 		}
 
 		/// <summary>
@@ -50,6 +77,8 @@ namespace SynthTree
 			List<Individual> done = new List<Individual>(excludeItems.Select(x => items[x]));
 			Individual ind;
 			int i = 0;
+			history.Push(items.Clone() as Individual[]);
+			undoHistory.Clear();
 			foreach (var j in targets)
 			{
 				i = 0;
@@ -70,6 +99,7 @@ namespace SynthTree
 				items[j] = ind;
 				done.Add(ind);
 			}
+			Generation++;
 		}
 
 		/// <summary>
