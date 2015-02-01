@@ -48,6 +48,7 @@ namespace SynthTree.Util
 			str.AppendFormat("digraph {0} {{ \n", Path.GetFileNameWithoutExtension(fileName));
 			foreach (var item in root.ToBreadthFirstList())
 			{
+				str.AppendFormat("\t{0}_{1}[label=\"{0}\"];\n", item, item.Index);
 				PrintTreeNode(item, str);
 			}
 			str.AppendLine("}");
@@ -67,10 +68,12 @@ namespace SynthTree.Util
 		{
 			var builder = new StringBuilder();
 			builder.AppendFormat("digraph {0} {{\n", Path.GetFileNameWithoutExtension(fileName));
+			builder.AppendLine("\tnode[shape=box];");
 			var dict = new Dictionary<Unit.UnitBase, int>();
 			
 
 			dict[renderer] = 0;
+			PrintLabel(renderer, builder, dict);
 			PrintTopologyUnit(renderer, builder, dict);
 
 			builder.AppendLine("}");
@@ -84,10 +87,16 @@ namespace SynthTree.Util
 				if (!dict.ContainsKey(item))
 				{
 					dict[item] = dict.Count;
+					PrintLabel(item, builder, dict);
 					PrintTopologyUnit(item, builder, dict);
 				}
 				builder.AppendFormat("\t{0}_{2} -> {1}_{3};\n", item, unit, dict[item], dict[unit]);
 			}
+		}
+
+		static void PrintLabel(Unit.UnitBase unit, StringBuilder builder, Dictionary<Unit.UnitBase, int> dict)
+		{
+			builder.AppendFormat("\t{0}_{1}[label=\"{0}\"];\n", unit, dict[unit]);
 		}
 	}
 }
