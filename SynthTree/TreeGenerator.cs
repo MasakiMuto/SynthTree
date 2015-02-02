@@ -128,10 +128,10 @@ namespace SynthTree
 
 		public static readonly Dictionary<NodeType, ModifierType> ModifierTable = new Dictionary<NodeType,ModifierType>
 		{
-			{NodeType.SeriesA, ModifierType.SeriesA1},
-			{NodeType.SeriesB, ModifierType.SeriesB1},
-			{NodeType.ParallelA, ModifierType.ParallelA1},
-			{NodeType.ParallelB, ModifierType.ParallelB1},
+			{NodeType.SeriesA, ModifierType.SeriesA},
+			{NodeType.SeriesB, ModifierType.SeriesB},
+			{NodeType.ParallelA, ModifierType.ParallelA},
+			{NodeType.ParallelB, ModifierType.ParallelB},
 			{NodeType.LoopW, ModifierType.LoopW},
 			{NodeType.UnitA, ModifierType.UnitA},
 			{NodeType.UnitB, ModifierType.UnitB},

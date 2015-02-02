@@ -9,11 +9,11 @@ namespace SynthTree.Tree
 {
 	public enum ModifierType
 	{
-		SeriesA1,
-		ParallelA1,
+		SeriesA,
+		ParallelA,
 		UnitA,
-		SeriesB1,
-		ParallelB1,
+		SeriesB,
+		ParallelB,
 		UnitB,
 		LoopW,
 		UnitW,
@@ -33,25 +33,25 @@ namespace SynthTree.Tree
 
 		public override void Process()
 		{
-			System.Diagnostics.Debug.Assert((Target is Unit2In1Out && (type == ModifierType.ParallelA1 || type == ModifierType.SeriesA1 || type == ModifierType.UnitA))
-				|| (Target is Unit1In2Out && (type == ModifierType.ParallelB1 || type == ModifierType.SeriesB1 || type == ModifierType.UnitB))
+			System.Diagnostics.Debug.Assert((Target is Unit2In1Out && (type == ModifierType.ParallelA || type == ModifierType.SeriesA || type == ModifierType.UnitA))
+				|| (Target is Unit1In2Out && (type == ModifierType.ParallelB || type == ModifierType.SeriesB || type == ModifierType.UnitB))
 				|| (Target is Unit1In1Out && (type == ModifierType.UnitW || type == ModifierType.LoopW)));
 			InheritTarget();
 			switch (type)
 			{
-				case ModifierType.SeriesA1:
+				case ModifierType.SeriesA:
 					SeriesA1();
 					break;
-				case ModifierType.ParallelA1:
+				case ModifierType.ParallelA:
 					ParallelA1();
 					break;
 				case ModifierType.UnitA:
 					UnitA();
 					break;
-				case ModifierType.SeriesB1:
+				case ModifierType.SeriesB:
 					SeriesB1();
 					break;
-				case ModifierType.ParallelB1:
+				case ModifierType.ParallelB:
 					ParallelB1();
 					break;
 				case ModifierType.UnitB:
@@ -188,11 +188,11 @@ namespace SynthTree.Tree
 			var fw = Level > MaxLevel ? NodeType.End : NodeType.FlagW;
 			switch (this.type)
 			{
-				case ModifierType.SeriesA1:
+				case ModifierType.SeriesA:
 					nt = new[] { fa, ta, tb };
 					wc = 3;
 					break;
-				case ModifierType.ParallelA1:
+				case ModifierType.ParallelA:
 					nt = new[]{ fa, ta, ta, tb, tb};
 					wc = 6;
 					break;
@@ -200,11 +200,11 @@ namespace SynthTree.Tree
 					nt = new[] { fa, tw };
 					wc = 1;
 					break;
-				case ModifierType.SeriesB1:
+				case ModifierType.SeriesB:
 					nt = new []{fb, tb, ta };
 					wc = 3;
 					break;
-				case ModifierType.ParallelB1:
+				case ModifierType.ParallelB:
 					nt = new[] { fb, tb, tb, ta, ta };
 					wc = 6;
 					break;

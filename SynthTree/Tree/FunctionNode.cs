@@ -25,7 +25,7 @@ namespace SynthTree.Tree
 
 		Type type;
 
-		static Dictionary<Type, int> childCount;
+		static Dictionary<Type, int> constantCount;
 
 		static FunctionNode()
 		{
@@ -39,7 +39,7 @@ namespace SynthTree.Tree
 				typeof(Unit.Splitter),
 				typeof(Unit.ConstantOscillator),
 			};
-			childCount = new Dictionary<Type, int>()
+			constantCount = new Dictionary<Type, int>()
 			{
 				{typeof(Unit.ConstantOscillator), 3},
 				{typeof(Unit.Filter), 5},
@@ -132,7 +132,7 @@ namespace SynthTree.Tree
 			{
 				head = SynthTree.NodeType.FlagW;
 			}
-			childCount.TryGetValue(type, out constant);
+			constantCount.TryGetValue(type, out constant);
 
 			return Enumerable.Repeat(head, 1).Concat(Enumerable.Repeat(NodeType.Constant, constant))
 				.Select(x => TreeGenerator.GetNode(x, Level))
