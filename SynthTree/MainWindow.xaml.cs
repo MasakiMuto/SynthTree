@@ -75,8 +75,9 @@ namespace SynthTree
 			}
 			Cursor = Cursors.Wait;
 			Manager.Start(tree);
-
+			UpdateControls();
 			Cursor = null;
+			PlayAllClick(null, null);
 			//var dev = new DevelopManager();
 			//using(var f =new FileUtil("test1.wav"))
 			//{
@@ -93,8 +94,20 @@ namespace SynthTree
 			var target = soundControls.FirstOrDefault(x => x.IsChecked);
 			if (target != null)
 			{
-				Manager.Save(target.Index);
-				Manager[target.Index].Tree.Serialize("tree.bin");
+				var dialog = new Microsoft.Win32.SaveFileDialog()
+				{
+					DefaultExt = ".wav",
+					Filter = "wave file | *.wav",
+					AddExtension = true
+				};
+				if (dialog.ShowDialog() ?? false)
+				{
+					var ind = Manager[target.Index];
+					ind.SaveSound();
+					System.IO.File.Copy(ind.Sound, dialog.FileName);
+					ind.Tree.Serialize(System.IO.Path.ChangeExtension(dialog.FileName, ".bin"));
+				}
+			
 			}
 		}
 
@@ -116,6 +129,13 @@ namespace SynthTree
 			Cursor = Cursors.Wait;
 			Manager.Update(GetSelectedIndex());
 			Cursor = null;
+			UpdateControls();
+			PlayAllClick(null, null);
+		}
+
+		void UpdateControls()
+		{
+			generationLabel.Content = Manager.Pool.Generation;
 		}
 
 		IEnumerable<int> GetSelectedIndex()
@@ -174,7 +194,17 @@ namespace SynthTree
 				val = 100;
 				thresholdBox.Text = val.ToString();
 			}
-			Manager.Pool.Threshold = val;
+			int max;
+			if (int.TryParse(thresholdMax.Text, out max))
+			{
+				Manager.Pool.ThresholdMax = max;
+			}
+			Manager.Pool.ThresholdMin = val;
+			if (Manager.Pool.ThresholdMax <= Manager.Pool.ThresholdMin)
+			{
+				Manager.Pool.ThresholdMax = double.MaxValue;
+				System.Windows.MessageBox.Show("類似度閾値の最小値が最大値を上回っています");
+			}
 		}
 
 		private void CompareButtonClick(object sender, RoutedEventArgs e)
@@ -190,6 +220,18 @@ namespace SynthTree
 			}
 			var val = Manager[target[0]].CompareTo(Manager[target[1]]);
 			similarityLabel.Content = "score:" + (int)val;
+		}
+
+		private void Undo(object sender, RoutedEventArgs e)
+		{
+			Manager.Pool.Undo();
+			UpdateControls();
+		}
+
+		private void Redo(object sender, RoutedEventArgs e)
+		{
+			Manager.Pool.Redo();
+			UpdateControls();
 		}
 
 

@@ -17,14 +17,43 @@ namespace SynthTree
 
 		public Individual this[int i]{get{return items[i];}}
 
-		public double Threshold { get; set; }
+		public double ThresholdMin { get; set; }
+		public double ThresholdMax { get; set; }
+
+		Stack<Individual[]> history, undoHistory;
 
 		public ItemPool(int count)
 		{
 			Instance = this;
 			rand = new Random();
 			items = new Individual[count];
-			Threshold = 100;
+			ThresholdMin = 100;
+			ThresholdMax = double.MaxValue;
+			history = new Stack<Individual[]>();
+			undoHistory = new Stack<Individual[]>();
+		}
+
+		public void Undo()
+		{
+			if (history.Count == 0)
+			{
+				return;
+			}
+			Generation--;
+			undoHistory.Push(items.Clone() as Individual[]);
+			items = history.Pop();
+			
+		}
+
+		public void Redo()
+		{
+			if (undoHistory.Count == 0)
+			{
+				return;
+			}
+			Generation++;
+			history.Push(items.Clone() as Individual[]);
+			items = undoHistory.Pop();
 		}
 
 		/// <summary>
@@ -47,10 +76,15 @@ namespace SynthTree
 			var targets = Enumerable.Range(0, items.Length).Except(excludeItems).ToArray();
 			List<Individual> done = new List<Individual>(excludeItems.Select(x => items[x]));
 			Individual ind;
+			int i = 0;
+			history.Push(items.Clone() as Individual[]);
+			undoHistory.Clear();
 			foreach (var j in targets)
 			{
+				i = 0;
 				do
 				{
+					i++;
 					ind = new Individual(childCreater());
 					if (!ind.IsValidWaveform())
 					{
@@ -61,10 +95,11 @@ namespace SynthTree
 						continue;
 					}
 					break;
-				} while (true);
+				} while (i < 100);
 				items[j] = ind;
 				done.Add(ind);
 			}
+			Generation++;
 		}
 
 		/// <summary>
@@ -76,7 +111,7 @@ namespace SynthTree
 		bool Compare(Individual origin, Individual another)
 		{
 			var s = origin.CompareTo(another);
-			return s > Threshold;
+			return s > ThresholdMin && s < ThresholdMax;
 		}
 
 		public void CrossOver(int[] index)
