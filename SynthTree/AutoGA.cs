@@ -74,7 +74,7 @@ namespace SynthTree
 			{
 				items[PoolSize - 1] = new Individual(Initial);
 			}
-			Parallel.For(0, Initial == null ? PoolSize : PoolSize - 1, i => items[i] = new Individual(trees[i]));
+			Parallel.For(0, Initial == null ? PoolSize : PoolSize - 1, i => items[i] = new Individual(new ParameterOptimizer(trees[i], target).Run()));
 			
 			Generation = 0;
 			FailCount = 0;
@@ -145,7 +145,7 @@ namespace SynthTree
 			int rank = 1;
 			foreach (var item in order)
 			{
-				prob[item] = Math.Pow(0.6, rank);
+				prob[item] = Math.Pow(0.9, rank) + 0.1;
 				rank++;
 			}
 		}
