@@ -12,8 +12,8 @@ namespace AudioLib
 {
 	public class Analyzer
 	{
-		readonly int WindowSize = 512;
-		readonly int NoOverlap = 128;
+		static readonly int WindowSize = 512;
+		static readonly int NoOverlap = 128;
 		readonly float[] sound;
 		readonly int SampleRate;
 		public double[] Freq { get; private set; }
@@ -22,6 +22,13 @@ namespace AudioLib
 		public double[] Pitch;//時間ごと最大成分周波数
 		public double[] PowerTime;//時間ごとボリューム(デシベル)
 		readonly long ActualDataLength;
+
+		static readonly double[] Hamming;
+
+		static Analyzer()
+		{
+			Hamming = Window.Hamming(WindowSize);
+		}
 
 		public Analyzer(string fileName)
 		{
@@ -58,10 +65,9 @@ namespace AudioLib
 
 		IEnumerable<double> GetWindowedData(int from, int length)
 		{
-			var window = Window.Hamming(length);
 			return Enumerable.Range(from, length)
 				.Select(x => sound.ElementAtOrDefault(x))
-				.Select((x, j) => x * window[j]);
+				.Select((x, j) => x * Hamming[j]);
 		}
 
 		public void CalcSpectrogram()
@@ -84,10 +90,9 @@ namespace AudioLib
 
 		public void Dft()
 		{
-			var window = Window.Hamming(WindowSize);
 			var w = sound
 				.Take(WindowSize)
-				.Select((x, j) => x * (float)window[j])
+				.Select((x, j) => x * (float)Hamming[j])
 				.Select(x => new Complex(x, 0)).ToArray();
 			Fourier.Forward(w, FourierOptions.Matlab);
 			Freq = w.Take(w.Length / 2).Select(x => x.Magnitude).ToArray();
@@ -119,12 +124,11 @@ namespace AudioLib
 
 		IEnumerable<float> CreateFrame(int from, bool window)
 		{
-			var w = Window.Hamming(WindowSize);
 			var head = from * NoOverlap - WindowSize / 2;
 			return Enumerable.Range(head, WindowSize)
 				.SkipWhile(x => x < 0)
 				.TakeWhile(x => x < ActualDataLength)
-				.Select(x => sound[x] * (window ? (float) w[x - head] : 1f));
+				.Select(x => sound[x] * (window ? (float) Hamming[x - head] : 1f));
 		}
 
 		double CalcPower(int from)
