@@ -13,13 +13,11 @@ namespace AudioLib
 	public class Analyzer
 	{
 		readonly int WindowSize = 512;
-		readonly int NoOverlap = 256;
+		readonly int NoOverlap = 128;
 		readonly float[] sound;
 		readonly int SampleRate;
 		public double[] Freq { get; private set; }
 		public double FreqPerIndex { get { return SampleRate / (double)WindowSize; } }
-		public double SecondPerIndex { get { return 1.0 / (SampleRate / FreqPerSample); } }
-		readonly int FreqPerSample = 10;//何サンプルごとにスペクトルを計算するか
 		public double[,] Spectrogram;
 		public double[] Pitch;//時間ごと最大成分周波数
 		public double[] PowerTime;//時間ごとボリューム(デシベル)
@@ -68,8 +66,6 @@ namespace AudioLib
 
 		public void CalcSpectrogram()
 		{
-			int FrameOverlap = WindowSize / 2;
-			int NoOverlap = WindowSize - FrameOverlap;
 			Spectrogram = new double[ActualDataLength / NoOverlap, WindowSize / 2];
 			Enumerable.Range(0, Spectrogram.GetLength(0))
 				.AsParallel()

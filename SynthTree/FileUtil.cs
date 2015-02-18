@@ -13,9 +13,9 @@ namespace SynthTree
 		const uint ChunkSize = 16;
 		const ushort CompressionCode = 1;
 		const ushort Channels = 1;
-		public const uint SampleRate = 8000;
+		public static readonly uint SampleRate = 8000;
 		const ushort Bit = 16;
-		const uint Bps = SampleRate * Bit / 8;
+		static readonly uint Bps = SampleRate * Bit / 8;
 		const ushort BlockAlign = Bit / 8;
 
 		BinaryWriter writer;
@@ -23,6 +23,12 @@ namespace SynthTree
 		long sampleCount;
 		float sample;
 		int acc;
+
+		static FileUtil()
+		{
+			SampleRate = (uint)Settings.Instance.SamplingFreq;
+			Bps = SampleRate * Bit / 8;
+		}
 
 		public FileUtil(string path)
 		{
