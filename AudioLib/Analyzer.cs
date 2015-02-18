@@ -137,7 +137,7 @@ namespace AudioLib
 			double s = 0;
 			foreach (var i in CreateFrame(from, false))
 			{
-				s += i * i; ;
+				s += Math.Abs(i);
 				c++;
 			}
 			if (c == 0)

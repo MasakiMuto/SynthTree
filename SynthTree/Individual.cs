@@ -56,7 +56,7 @@ namespace SynthTree
 				Data[i] = (Data[i] - avg) / max;
 				if(float.IsNaN(Data[i]))
 				{
-					System.Diagnostics.Debugger.Break();
+					//System.Diagnostics.Debugger.Break();
 					Data[i] = 0;
 				}
 			}

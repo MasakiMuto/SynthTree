@@ -84,7 +84,7 @@ namespace SynthTree
 		{
 			var model = new OxyPlot.PlotModel()
 			{
-				Title = "powergram"
+				Title = "velocity"
 			};
 			model.Axes.Add(new OxyPlot.Axes.LinearAxis()
 			{
