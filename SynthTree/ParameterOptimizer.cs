@@ -27,7 +27,7 @@ namespace SynthTree
 		{
 			rand = RandomProvider.GetThreadRandom();
 			Original = original;
-			items = Original.ToBreadthFirstList().OfType<Tree.Constant>().ToArray();
+			items = GetActiveConstants(original).ToArray();
 			Dimension = items.Length;
 			Target = target;
 		
@@ -41,6 +41,11 @@ namespace SynthTree
 			history = new Dictionary<double[], Individual>();
 			probTable = new double[PoolSize];
 			scores = new double[PoolSize];
+		}
+
+		IEnumerable<Tree.Constant> GetActiveConstants(Tree.RootNode tree)
+		{
+			return tree.ToBreadthFirstList().OfType<Tree.Constant>().Where(x => x.Parent.IsUsed());
 		}
 
 		public Tree.RootNode Run()
@@ -61,7 +66,7 @@ namespace SynthTree
 		{
 			var tree = Original.CloneTree();
 			int i = 0;
-			foreach (var c in tree.ToBreadthFirstList().OfType<Tree.Constant>())
+			foreach (var c in GetActiveConstants(tree))
 			{
 				c.Value = vector[i];
 				i++;

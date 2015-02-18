@@ -28,6 +28,7 @@ namespace SynthTree.Tree
 
 		public NodeType NodeType { get; protected set; }
 
+		
 		public TreeBase()
 		{
 			Children = new List<TreeBase>();
@@ -130,6 +131,15 @@ namespace SynthTree.Tree
 		{
 			Children.Clear();
 			DevelopChildren();
+		}
+
+		/// <summary>
+		/// トポロジー内で最終的にこのノードが効果を発揮しているか
+		/// </summary>
+		/// <returns></returns>
+		public virtual bool IsUsed()
+		{
+			return true;
 		}
 	
 

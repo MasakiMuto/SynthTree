@@ -143,6 +143,22 @@ namespace SynthTree.Tree
 		{
 			return new FunctionNode<T>();
 		}
+
+		
+		
+		public override bool IsUsed()
+		{
+			var head = Children.FirstOrDefault();
+			while (head != null)
+			{
+				if (head.NodeType.HasFlag(NodeType.FlagType ^ SynthTree.NodeType.FlagAbstract))
+				{
+					return false;
+				}
+				head = head.Children.FirstOrDefault();
+			}
+			return true;
+		}
 	}
 
 }
