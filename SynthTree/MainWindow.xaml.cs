@@ -21,6 +21,8 @@ namespace SynthTree
 	/// </summary>
 	public partial class MainWindow : Window
 	{
+		public static MainWindow Instance { get; private set; }
+
 		public GAManager Manager { get; private set; }
 		SoundItemControl[] soundControls;
 
@@ -32,6 +34,7 @@ namespace SynthTree
 
 		public MainWindow()
 		{
+			Instance = this;
 			InitializeComponent();
 			Manager = new GAManager();
 			soundControls = Enumerable.Range(0, 9)
@@ -166,10 +169,15 @@ namespace SynthTree
 			};
 			if (dialog.ShowDialog() ?? false)
 			{
-				tree = Tree.RootNode.Deserialize(dialog.FileName);
-				individual = new Individual(tree);
+				SetInitial(Tree.RootNode.Deserialize(dialog.FileName));
 			}
 			
+		}
+
+		public void SetInitial(Tree.RootNode t)
+		{
+			this.tree = t;
+			individual = new Individual(tree);
 		}
 
 		private void PreviewButtonClick(object sender, RoutedEventArgs e)
@@ -177,8 +185,8 @@ namespace SynthTree
 			if (individual != null)
 			{
 				individual.Play();
-				Util.Visualizer.ShowTopology(individual.Topology);
-				Util.Visualizer.ShowTree(individual.Tree);
+				//Util.Visualizer.ShowTopology(individual.Topology);
+				//Util.Visualizer.ShowTree(individual.Tree);
 			}
 		}
 

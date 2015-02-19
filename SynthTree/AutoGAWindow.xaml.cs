@@ -55,9 +55,10 @@ namespace SynthTree
 			stopwatch.Stop();
 			canceller.Dispose();
 			canceller = null;
-			ga.BestElite.Tree.Serialize(System.IO.Path.GetFileNameWithoutExtension(targetFile) + ".bin");
+			ga.BestElite.Tree.Serialize(System.IO.Path.ChangeExtension(targetFile, "bin"));
 			generation.Content = "complete";
 			Cursor = null;
+			MainWindow.Instance.SetInitial(ga.BestElite.Tree);
 		}
 
 		OxyPlot.Series.LineSeries series;
