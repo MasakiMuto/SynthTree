@@ -4,3 +4,4 @@ SynthTree/obj/
 AudioLib/obj/
 packages/
 AudioLib/bin/
+*.psess
