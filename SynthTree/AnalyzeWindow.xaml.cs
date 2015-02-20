@@ -46,6 +46,7 @@ namespace SynthTree
 		{
 			this.Cursor = Cursors.Wait;
 			Analyzer = new AudioLib.Analyzer(fn);
+			Settings.Instance.SamplingFreq = Analyzer.SampleRate;
 			//analyzer.Dft();
 			//analyzer.CalcSpectrogram();
 			await Task.Run(() => Analyzer.CalcPower());

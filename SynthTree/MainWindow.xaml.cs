@@ -32,6 +32,8 @@ namespace SynthTree
 		AudioLib.Recorder recorder;
 		AnalyzeWindow analyzer;
 
+		string defaultFileName;
+
 		public MainWindow()
 		{
 			Instance = this;
@@ -54,6 +56,12 @@ namespace SynthTree
 			analyzer = new AnalyzeWindow();
 			analyzer.Show();
 			new AutoGAWindow().Show();
+
+			var args = Environment.GetCommandLineArgs();
+			if (args.Length == 2)
+			{
+				LoadGaResult(args[1]);
+			}
 		}
 
 		void GenerateClick(object sender, RoutedEventArgs e)
@@ -81,15 +89,6 @@ namespace SynthTree
 			UpdateControls();
 			Cursor = null;
 			PlayAllClick(null, null);
-			//var dev = new DevelopManager();
-			//using(var f =new FileUtil("test1.wav"))
-			//{
-			//	f.Write(Enumerable.Range(0, 44100).Select(x => (float)dev.render.RequireValue()));
-			//}
-			//using (var s = new SoundPlayer("test1.wav"))
-			//{
-			//	s.Play();
-			//}
 		}
 
 		private void SaveButtonClick(object sender, RoutedEventArgs e)
@@ -101,7 +100,8 @@ namespace SynthTree
 				{
 					DefaultExt = ".wav",
 					Filter = "wave file | *.wav",
-					AddExtension = true
+					AddExtension = true,
+					FileName = defaultFileName,
 				};
 				if (dialog.ShowDialog() ?? false)
 				{
@@ -165,13 +165,30 @@ namespace SynthTree
 			{
 				AddExtension = true,
 				DefaultExt = "bin",
-				Filter = "tree binary|*.bin"
+				Filter = "files|*.bin;*.result|tree binary|*.bin|GA result|*.result"
 			};
 			if (dialog.ShowDialog() ?? false)
 			{
-				SetInitial(Tree.RootNode.Deserialize(dialog.FileName));
+				LoadGaResult(dialog.FileName);
 			}
 			
+		}
+
+		void LoadGaResult(string fileName)
+		{
+			defaultFileName = System.IO.Path.ChangeExtension(fileName, ".wav");
+			if (GAResult.IsGAResultFile(fileName))
+			{
+				var res = GAResult.Load(fileName);
+				analyzer.OpenFile(res.TargetFileName);
+				SetInitial(res.Tree);
+				
+			}
+			else
+			{
+				SetInitial(Tree.RootNode.Deserialize(fileName));
+			}
+				
 		}
 
 		public void SetInitial(Tree.RootNode t)

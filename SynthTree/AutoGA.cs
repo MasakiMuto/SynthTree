@@ -23,6 +23,42 @@ namespace SynthTree
 		}
 	}
 
+	[Serializable]
+	public class GAResult
+	{
+		public Tree.RootNode Tree;
+		public string TargetFileName;
+
+		public const string Extension = ".result";
+
+		public static bool IsGAResultFile(string fileName)
+		{
+			return System.IO.Path.GetExtension(fileName) == Extension;
+		}
+
+		public static void Save(string fileName, Tree.RootNode tree, string target)
+		{
+			var res = new GAResult();
+			res.Tree = tree;
+			res.TargetFileName = target;
+			var ser = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
+			using (var file = System.IO.File.OpenWrite(fileName))
+			{
+				ser.Serialize(file, res);
+			}
+		}
+
+		public static GAResult Load(string fileName)
+		{
+			var ser = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
+			using (var file = System.IO.File.OpenRead(fileName))
+			{
+				return ser.Deserialize(file) as GAResult;
+			}
+		}
+
+	}
+
 	public class AutoGA
 	{
 		Analyzer target;
@@ -53,13 +89,18 @@ namespace SynthTree
 
 		public System.Threading.CancellationToken Cancell;
 
+		readonly string fileName;
+
 		public AutoGA(string targetFile, int poolSize)
 		{
+			fileName = targetFile;
 			this.PoolSize = poolSize;
 			Elite = 1;
 			target = new Analyzer(targetFile);
+			Settings.Instance.SamplingFreq = target.SampleRate;
 			target.Normalize();
 			target.CalcSpectrogram();
+			
 
 			items = new Individual[poolSize];
 			
@@ -98,6 +139,11 @@ namespace SynthTree
 				}
 			}
 			IsRunning = false;
+		}
+
+		public void SaveResult(string fileName)
+		{
+			GAResult.Save(fileName, BestElite.Tree, this.fileName);
 		}
 
 		void Update()

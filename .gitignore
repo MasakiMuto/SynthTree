@@ -5,3 +5,5 @@ AudioLib/obj/
 packages/
 AudioLib/bin/
 *.psess
+ConsoleGA/bin/
+ConsoleGA/obj/

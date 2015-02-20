@@ -15,8 +15,7 @@ namespace AudioLib
 		static readonly int WindowSize = 512;
 		static readonly int NoOverlap = 128;
 		readonly float[] sound;
-		readonly int SampleRate;
-		public double[] Freq { get; private set; }
+		public readonly int SampleRate;
 		public double FreqPerIndex { get { return SampleRate / (double)WindowSize; } }
 		public double[,] Spectrogram;
 		public double[] Pitch;//時間ごと最大成分周波数
@@ -86,16 +85,6 @@ namespace AudioLib
 						Spectrogram[i, j] = w[j].Magnitude;
 					}				
 				});
-		}
-
-		public void Dft()
-		{
-			var w = sound
-				.Take(WindowSize)
-				.Select((x, j) => x * (float)Hamming[j])
-				.Select(x => new Complex(x, 0)).ToArray();
-			Fourier.Forward(w, FourierOptions.Matlab);
-			Freq = w.Take(w.Length / 2).Select(x => x.Magnitude).ToArray();
 		}
 
 		void CalcInner(ref double[] target, Func<int, double> func)
