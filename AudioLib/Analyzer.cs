@@ -92,14 +92,19 @@ namespace AudioLib
 			var tmp = Enumerable.Range(0, (int)ActualDataLength / NoOverlap)
 				.Select(i => func(i))
 				.ToArray();
-			target = new double[NoOverlap * tmp.Length];
+			target = new double[ActualDataLength];
+			double step;
 			for (int i = 0; i < tmp.Length - 1; i++)
 			{
-				var step = (tmp[i + 1] - tmp[i]) / NoOverlap;
+				step = (tmp[i + 1] - tmp[i]) / NoOverlap;
 				for (int j = 0; j < NoOverlap; j++)
 				{
 					target[i * NoOverlap + j] = tmp[i] + step * j;
 				}
+			}
+			for (int i = (tmp.Length - 1) * NoOverlap; i < ActualDataLength; i++)
+			{
+				target[i] = tmp[tmp.Length - 1];
 			}
 		}
 

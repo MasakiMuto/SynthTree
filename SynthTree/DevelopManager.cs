@@ -61,6 +61,10 @@ namespace SynthTree
 			TableLength = Math.Min(freq.Length, powerTable.Length);
 		}
 
+		public static void SetNonNormalizedSource(double[] freq, double[] power){
+			SetSource(freq.Select(x=>x / (Settings.Instance.SamplingFreq / 2)).ToArray(), power);
+		}
+
 
 		public static Tree.RootNode CreateInitialTree()
 		{

@@ -100,7 +100,9 @@ namespace SynthTree
 			Settings.Instance.SamplingFreq = target.SampleRate;
 			target.Normalize();
 			target.CalcSpectrogram();
-			
+			target.CalcPitch();
+			target.CalcPower();
+			DevelopManager.SetNonNormalizedSource(target.Pitch, target.PowerTime);
 
 			items = new Individual[poolSize];
 			
