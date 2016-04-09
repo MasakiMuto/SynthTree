@@ -193,7 +193,7 @@ namespace SynthTree
 			if (!history.TryGetValue(param, out ind))
 			{
 				var tree = VectorToTree(param);
-				ind = new Individual(tree);
+				ind = new Individual(tree, false);
 				history[param] = ind;
 			}
 			return ind.CompareTo(Target);

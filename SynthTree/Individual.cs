@@ -14,14 +14,14 @@ namespace SynthTree
 		public readonly AudioLib.Analyzer Analyzer;
 		public readonly float[] Data;
 
-		public Individual(Tree.RootNode tree)
+		public Individual(Tree.RootNode tree, bool useMask)
 		{
 			Tree = tree;
 			Topology = DevelopManager.DevelopTopology(tree);
 			Data = Enumerable.Range(0, DevelopManager.TableLength).Select(x => (float)Topology.RequireValue(x)).ToArray();
 			Normalize();
 			Analyzer = new AudioLib.Analyzer(Data, (int)FileUtil.SampleRate);
-			Analyzer.CalcSpectrogram();
+			Analyzer.CalcSpectrogram(useMask);
 			
 		}
 
@@ -68,6 +68,37 @@ namespace SynthTree
 		}
 
 		public double CompareTo(AudioLib.Analyzer another)
+		{
+
+			return CompareThresholdMasking(another);
+			//return CompareSpectrogram(another);
+		}
+
+		double CompareThresholdMasking(AudioLib.Analyzer target)
+		{
+			double s = 0;
+			for (int i = 0; i < Analyzer.Spectrogram.GetLength(0); i++)
+			{
+				for (int j = 0; j < Analyzer.Spectrogram.GetLength(1); j++)
+				{
+					var m = target.ThresholdMask[i][j];
+					var o = Analyzer.Spectrogram[i, j];
+					var t = target.Spectrogram[i, j];
+					if (t >= m)
+					{
+						s += (o - t) * (o - t);
+					}
+					if (o >= t)
+					{
+						s += (o - m) * (o - m);
+					}
+				}
+			}
+			s /= Analyzer.Spectrogram.GetLength(0);
+			return s;
+		}
+
+		double CompareSpectrogram(AudioLib.Analyzer another)
 		{
 			double s = 0;
 			for (int i = 0; i < Analyzer.Spectrogram.GetLength(0); i++)

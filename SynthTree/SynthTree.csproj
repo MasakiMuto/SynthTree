@@ -104,6 +104,7 @@
     <Compile Include="Unit\TableSource.cs" />
     <Compile Include="Unit\WaveSource.cs" />
     <Compile Include="Unit\Wire.cs" />
+    <Compile Include="Util\Extension.cs" />
     <Compile Include="Util\KeyValueSet.cs" />
     <Compile Include="Util\TreeVisualizer.cs" />
     <Page Include="AnalyzeWindow.xaml">

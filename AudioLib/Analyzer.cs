@@ -18,6 +18,8 @@ namespace AudioLib
 		public readonly int SampleRate;
 		public double FreqPerIndex { get { return SampleRate / (double)WindowSize; } }
 		public double[,] Spectrogram;
+		Complex[][] ComplexSpectrogram;
+		public double[][] ThresholdMask;
 		public double[] Pitch;//時間ごと最大成分周波数
 		public double[] PowerTime;//時間ごとボリューム(デシベル)
 		readonly long ActualDataLength;
@@ -69,23 +71,39 @@ namespace AudioLib
 				.Select((x, j) => x * Hamming[j]);
 		}
 
-		public void CalcSpectrogram()
+		public void CalcSpectrogram(bool useMask)
 		{
 			Spectrogram = new double[ActualDataLength / NoOverlap, WindowSize / 2];
+			if (useMask)
+			{
+				ComplexSpectrogram = new Complex[ActualDataLength / NoOverlap][];
+				ThresholdMask = new double[ActualDataLength / NoOverlap][];
+			}
 			Enumerable.Range(0, Spectrogram.GetLength(0))
-				.AsParallel()
+				//.AsParallel()
 				.ForAll(i =>
 				{
 					var w = GetWindowedData(i * NoOverlap - WindowSize / 2, WindowSize)
 						.Select(x=>new Complex(x, 0))
 						.ToArray();
 					Fourier.Radix2Forward(w, FourierOptions.Matlab);
+					ComplexSpectrogram[i] = new Complex[WindowSize / 2];
 					for (int j = 0; j < w.Length / 2; j++)
 					{
+						if (useMask)
+						{
+							ComplexSpectrogram[i][j] = w[j];
+						}
 						Spectrogram[i, j] = w[j].Magnitude;
-					}				
+					}
+					if(useMask)
+					{
+						ThresholdMask[i] = new ThresholdMasking(ComplexSpectrogram[i], SampleRate).Calc();
+					}
 				});
+			
 		}
+
 
 		void CalcInner(ref double[] target, Func<int, double> func)
 		{
@@ -217,6 +235,10 @@ namespace AudioLib
 			}
 			return n;
 		}
+
+
+
+		
 
 
 	}

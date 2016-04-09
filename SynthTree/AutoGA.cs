@@ -99,7 +99,7 @@ namespace SynthTree
 			target = new Analyzer(targetFile);
 			Settings.Instance.SamplingFreq = target.SampleRate;
 			target.Normalize();
-			target.CalcSpectrogram();
+			target.CalcSpectrogram(true);
 			target.CalcPitch();
 			target.CalcPower();
 			DevelopManager.SetNonNormalizedSource(target.Pitch, target.PowerTime);
@@ -115,9 +115,9 @@ namespace SynthTree
 			var trees = Enumerable.Range(0, Initial == null ? PoolSize : PoolSize - 1).Select(x => DevelopManager.CreateInitialTree()).ToArray();
 			if (Initial != null)
 			{
-				items[PoolSize - 1] = new Individual(Initial);
+				items[PoolSize - 1] = new Individual(Initial, false);
 			}
-			Parallel.For(0, Initial == null ? PoolSize : PoolSize - 1, i => items[i] = new Individual(new ParameterOptimizer(trees[i], target).Run()));
+			Parallel.For(0, Initial == null ? PoolSize : PoolSize - 1, i => items[i] = new Individual(new ParameterOptimizer(trees[i], target).Run(), false));
 			
 			Generation = 0;
 			FailCount = 0;
@@ -181,7 +181,7 @@ namespace SynthTree
 			{
 				newItems[i] = items[elite[i]];
 			}
-			Parallel.For(elite.Length, PoolSize, i => newItems[i] = new Individual(CreateChildTree()));
+			Parallel.For(elite.Length, PoolSize, i => newItems[i] = new Individual(CreateChildTree(), false));
 			items = newItems;
 		}
 

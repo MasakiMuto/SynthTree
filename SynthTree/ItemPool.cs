@@ -27,7 +27,7 @@ namespace SynthTree
 			Instance = this;
 			rand = new Random();
 			items = new Individual[count];
-			ThresholdMin = 100;
+			ThresholdMin = 0;
 			ThresholdMax = double.MaxValue;
 			history = new Stack<Individual[]>();
 			undoHistory = new Stack<Individual[]>();
@@ -62,7 +62,7 @@ namespace SynthTree
 		/// <param name="p"></param>
 		public void Init(Tree.RootNode p)
 		{
-			items[0] = new Individual(p);
+			items[0] = new Individual(p, true);
 			UpdateInner(() => p.CloneTree().Mutate(rand), new[] { 0 });
 		}
 
@@ -85,7 +85,7 @@ namespace SynthTree
 				do
 				{
 					i++;
-					ind = new Individual(childCreater());
+					ind = new Individual(childCreater(), true);
 					if (!ind.IsValidWaveform())
 					{
 						continue;
@@ -110,6 +110,7 @@ namespace SynthTree
 		/// <returns></returns>
 		bool Compare(Individual origin, Individual another)
 		{
+			return true;
 			var s = origin.CompareTo(another);
 			return s > ThresholdMin && s < ThresholdMax;
 		}

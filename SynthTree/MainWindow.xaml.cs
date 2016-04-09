@@ -69,7 +69,7 @@ namespace SynthTree
 			do
 			{
 				tree = DevelopManager.CreateInitialTree();
-				individual = new Individual(tree);
+				individual = new Individual(tree, true);
 			} while (!individual.IsValidWaveform());
 			
 			individual.Play();
@@ -194,7 +194,7 @@ namespace SynthTree
 		public void SetInitial(Tree.RootNode t)
 		{
 			this.tree = t;
-			individual = new Individual(tree);
+			individual = new Individual(tree, true);
 		}
 
 		private void PreviewButtonClick(object sender, RoutedEventArgs e)
